@@ -1,0 +1,27 @@
+Year,Day,Part,Lang,Name,Result,Time (ms)
+2021,1,X,AWK,Sonar Sweep,1759,11
+2021,1,2,AWK,Sonar Sweep,1805
+2021,2,1,AWK,Dive!,1383564,12
+2021,2,2,AWK,Dive!,1488311643,12
+2021,3,X,Haskell,Binary Diagnostic,4103154,24
+2021,3,2,Haskell,Binary Diagnostic,4245351
+2021,4,X,Haskell,Giant Squid,49860,48
+2021,4,2,Haskell,Giant Squid,24628
+2021,5,1,AWK,Hydrothermal Venture,7414,118
+2021,5,2,AWK,Hydrothermal Venture,19676,183
+2021,6,X,C,Lanternfish,394994,6
+2021,6,2,C,Lanternfish,1765974267455
+2021,7,1,AWK,The Treachery of Whales,345035,178
+2021,7,2,AWK,The Treachery of Whales,97038163,12
+2021,8,1,AWK,Seven Segment Search,514,12
+2021,8,2,AWK,Seven Segment Search,1012272,109
+2021,9,1,AWK,Smoke Basin,498,37
+2021,9,2,AWK,Smoke Basin,1071000,170
+2021,10,X,AWK,Syntax Scoring,399153,26
+2021,10,2,AWK,Syntax Scoring,2995077699
+2021,11,X,C,Dumbo Octopus,1739,7
+2021,11,2,C,Dumbo Octopus,324
+2021,12,X,Haskell,Passage Pathing,3369,225
+2021,12,2,Haskell,Passage Pathing,85883
+2021,13,X,AWK,Transparent Origami,724,20
+2021,13,2,AWK,Transparent Origami,CPJBERUL

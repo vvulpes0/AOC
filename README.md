@@ -20,4 +20,11 @@ I just run something like the following until a stable value appears:
 time ./06 < 06.txt
 ```
 
+## License
+
+Although it is unlikely to be useful,
+all code contained in this repository is licensed under the MIT license.
+See `LICENSE` for details.
+Puzzle inputs are not provided here (those don't belong to me).
+
 [1]:  https://adventofcode.com/

@@ -27,3 +27,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,13,2,AWK,Transparent Origami,CPJBERUL,
 2021,14,X,AWK,Extended Polymerization,3230,20
 2021,14,2,AWK,Extended Polymerization,3542388217759,
+2021,15,X,C,Chiton,698,80
+2021,15,2,C,Chiton,3022,

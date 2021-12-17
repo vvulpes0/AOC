@@ -38,6 +38,7 @@ BEGIN {
 {
 	split($2,x,/\.\./);
 	split($4,y,/\.\./);
+	u = 0
 	g = 0
 	s = (y[1] < 0) ? -y[1] : y[2]
 	# solve x[1] = t*(t+1)/2 for t, this is minimal x-velocity
@@ -57,6 +58,7 @@ BEGIN {
 				if (x[1] > a || a > x[2]) { continue; }
 				g += 1
 				b = 1
+				u = v
 				break
 			}
 			if (b) { continue; }
@@ -68,9 +70,10 @@ BEGIN {
 				a = dragged(j,i)
 				if (x[1] > a || a > x[2]) { continue; }
 				g += 1
+				u = v
 				break
 			}
 		}
 	}
-	print dragless(y[1],y[1]),g
+	print dragless(u,u),g
 }

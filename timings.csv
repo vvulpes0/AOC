@@ -31,5 +31,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,15,2,C,Chiton,3022,
 2021,16,X,C,Packet Decoder,883,6
 2021,16,2,C,Packet Decoder,1675198555015,
-2021,17,X,AWK,Trick Shot,30628,90
-2021,17,X,AWK,Trick Shot,4433,
+2021,17,X,AWK,Trick Shot,30628,34
+2021,17,2,AWK,Trick Shot,4433,

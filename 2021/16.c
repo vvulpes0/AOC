@@ -39,6 +39,7 @@ main(void)
 	p = parse_packet(&u, &c, NULL);
 	printf("%d\t%ld\n", sum_versions(p), p.value);
 	free_packets(p.packets);
+	while (EOF != c) { c = getchar(); }
 	return 0;
 }
 

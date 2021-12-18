@@ -1,6 +1,7 @@
 #!/usr/bin/env awk -f
 BEGIN {
 	FS = ""
+	OFS = "\t"
 }
 
 {
@@ -34,6 +35,7 @@ END {
 				b = 0
 			}
 			if (b) {
+				r += c[j] + 1
 				++y
 				x[i "," j] = y
 			}
@@ -103,5 +105,5 @@ END {
 		n = g[i]
 	}
 
-	print k * m * n
+	print r, k * m * n
 }

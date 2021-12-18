@@ -11,6 +11,7 @@ BEGIN {
 	segments["acf"] = 7
 	segments["abcdefg"] = 8
 	segments["abcdfg"] = 9
+	b[2] = b[3] = b[4] = b[7] = 0
 }
 
 {
@@ -57,6 +58,7 @@ BEGIN {
 	split($2,x," ")
 	for (i = 1; i <= length(x); ++i) {
 		split(x[i],y,"")
+		a += (length(x[i]) in b)
 		for (j = 1; j <= length(y); ++j) {
 			t = y[j]
 			for (k in m) {
@@ -85,5 +87,5 @@ BEGIN {
 }
 
 END {
-	print result
+	print a,result
 }

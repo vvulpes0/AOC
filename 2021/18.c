@@ -64,6 +64,7 @@ magnitude(struct Fn const * n)
 	long d[16];
 	int i;
 	int j = 0;
+	int k;
 	int m = 0;
 	if (!n) { return 0; }
 	while (n)
@@ -74,14 +75,19 @@ magnitude(struct Fn const * n)
 		s[j++] = n->value;
 		n = n->tail;
 	}
+	i = 0;
 	while (j - 1)
 	{
-		for (i=0; i < j && d[i] != m; ++i) {;}
-		if (i == j) { --m; continue; }
-		s[i] = 3 * s[i] + 2 * s[i+1];
+		for (; i < j && d[i] != m; ++i) {;}
+		if (i == j) { --m; i = 0; continue; }
+		s[i] = 3 * s[i] + 2 * s[i + 1];
 		--(d[i]);
 		--j;
-		for (++i; i < j; ++i) { s[i] = s[i+1]; d[i] = d[i+1]; }
+		for (k = i + 1; k < j; ++k)
+		{
+			s[k] = s[k + 1];
+			d[k] = d[k + 1];
+		}
 	}
 	return s[0];
 }

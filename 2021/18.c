@@ -16,7 +16,7 @@ static _Bool explode(struct Fn *);
 static _Bool split(struct Fn *);
 static void freeFn(struct Fn *);
 static void printfn(struct Fn const);
-static long magnitude(struct Fn const *);
+static int magnitude(struct Fn const *);
 
 int
 main(void)
@@ -26,8 +26,8 @@ main(void)
 	struct Fn * t;
 	struct Fn * x;
 	struct Fn * y;
-	long m = 0;
-	long n = 0;
+	int m = 0;
+	int n = 0;
 	int i;
 	int j;
 
@@ -53,15 +53,15 @@ main(void)
 		b = add(b,a[i]);
 		freeFn(a[i]);
 	}
-	printf("%ld\t%ld\n",magnitude(b),m);
+	printf("%d\t%d\n",magnitude(b),m);
 	return 0;
 }
 
-long
+int
 magnitude(struct Fn const * n)
 {
-	long s[16];
-	long d[16];
+	int s[16];
+	int d[16];
 	int i;
 	int j = 0;
 	int k;

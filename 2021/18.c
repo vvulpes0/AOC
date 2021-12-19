@@ -14,7 +14,6 @@ static struct Fn * readFn(void);
 static struct Fn * add(struct Fn *, struct Fn *);
 static _Bool explode(struct Fn *);
 static _Bool split(struct Fn *);
-static void reduce(struct Fn *);
 static void freeFn(struct Fn *);
 static void printfn(struct Fn const);
 static long magnitude(struct Fn const *);
@@ -87,17 +86,6 @@ magnitude(struct Fn const * n)
 	return s[0];
 }
 
-void
-reduce(struct Fn * n)
-{
-	_Bool b = 1;
-	while (b)
-	{
-		if (explode(n)) { continue; }
-		b = split(n);
-	}
-}
-
 struct Fn *
 add(struct Fn * a, struct Fn * b)
 {
@@ -125,17 +113,17 @@ add(struct Fn * a, struct Fn * b)
 		p = &(q->tail);
 		b = b->tail;
 	}
-	reduce(t);
+	while (explode(t));
 	return t;
 }
 
 _Bool
 explode(struct Fn * n)
 {
-	struct Fn * t;
+	struct Fn * t = n;
 	struct Fn * p = NULL;
 	while (n && n->depth < 4) { p = n; n = n->tail; }
-	if (!n) { return 0; }
+	if (!n) { return split(t); }
 	/* we're at the left element of a pair to explode */
 	assert(n->tail);
 	if (p) { p->value += n->value; }
@@ -224,7 +212,6 @@ freeFn(struct Fn * n)
 		free(n);
 		n = t;
 	}
-	return;
 }
 
 void

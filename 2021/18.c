@@ -120,22 +120,26 @@ add(struct Fn * a, struct Fn * b)
 _Bool
 explode(struct Fn * n)
 {
-	struct Fn * t = n;
+	struct Fn * o = n;
+	struct Fn * t;
 	struct Fn * p = NULL;
-	while (n && n->depth < 4) { p = n; n = n->tail; }
-	if (!n) { return split(t); }
-	/* we're at the left element of a pair to explode */
-	assert(n->tail);
-	if (p) { p->value += n->value; }
-	t = n->tail;
-	if (t->tail) {
-		t->tail->value += n->tail->value;
+	while (n)
+	{
+		while (n && n->depth < 4) { p = n; n = n->tail; }
+		if (!n) { break; }
+		/* we're at the left element of a pair to explode */
+		assert(n->tail);
+		if (p) { p->value += n->value; }
+		t = n->tail;
+		if (t->tail) { t->tail->value += n->tail->value; }
+		n->tail = t->tail;
+		--(n->depth);
+		n->value = 0;
+		free(t);
+		p = n;
+		n = n->tail;
 	}
-	n->tail = t->tail;
-	--(n->depth);
-	n->value = 0;
-	free(t);
-	return 1;
+	return split(o);
 }
 
 _Bool

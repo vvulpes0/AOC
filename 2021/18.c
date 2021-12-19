@@ -5,21 +5,19 @@
 #define SIZE 100
 
 struct Fn {
-	struct Fn * parent;
-	struct Fn * left;
-	struct Fn * right;
+	struct Fn * tail;
+	int depth;
 	int value;
 };
 
 static struct Fn * readFn(void);
-static struct Fn * copy(struct Fn const * const);
 static struct Fn * add(struct Fn *, struct Fn *);
-static _Bool explode(struct Fn *, int);
+static _Bool explode(struct Fn *);
 static _Bool split(struct Fn *);
 static void reduce(struct Fn *);
 static void freeFn(struct Fn *);
 static void printfn(struct Fn const);
-static long magnitude(struct Fn const * const);
+static long magnitude(struct Fn const *);
 
 int
 main(void)
@@ -33,6 +31,7 @@ main(void)
 	long n = 0;
 	int i;
 	int j;
+
 	for (i = 0; i < SIZE; ++i)
 	{
 		a[i] = readFn();
@@ -42,28 +41,50 @@ main(void)
 		for (j = 0; j < SIZE; ++j)
 		{
 			if (i == j) { continue; }
-			x = copy(a[i]);
-			y = copy(a[j]);
-			t = add(x,y);
+			t = add(a[i],a[j]);
 			n = magnitude(t);
 			freeFn(t);
 			t = x = y = NULL;
 			m = (m > n) ? m : n;
 		}
 	}
-	for (i = 0; i < SIZE; ++i)
+	b = a[0];
+	for (i = 1; i < SIZE; ++i)
 	{
 		b = add(b,a[i]);
+		freeFn(a[i]);
 	}
 	printf("%ld\t%ld\n",magnitude(b),m);
 	return 0;
 }
 
 long
-magnitude(struct Fn const * const n)
+magnitude(struct Fn const * n)
 {
+	long s[16];
+	long d[16];
+	int i;
+	int j = 0;
+	int m = 0;
 	if (!n) { return 0; }
-	return 3*magnitude(n->left) + 2*magnitude(n->right) + n->value;
+	while (n)
+	{
+		assert(j<16);
+		d[j] = n->depth;
+		m = (d[j] > m) ? d[j] : m;
+		s[j++] = n->value;
+		n = n->tail;
+	}
+	while (j - 1)
+	{
+		for (i=0; i < j && d[i] != m; ++i) {;}
+		if (i == j) { --m; continue; }
+		s[i] = 3 * s[i] + 2 * s[i+1];
+		--(d[i]);
+		--j;
+		for (++i; i < j; ++i) { s[i] = s[i+1]; d[i] = d[i+1]; }
+	}
+	return s[0];
 }
 
 void
@@ -72,7 +93,7 @@ reduce(struct Fn * n)
 	_Bool b = 1;
 	while (b)
 	{
-		if (explode(n, 0)) { continue; }
+		if (explode(n)) { continue; }
 		b = split(n);
 	}
 }
@@ -80,88 +101,70 @@ reduce(struct Fn * n)
 struct Fn *
 add(struct Fn * a, struct Fn * b)
 {
-	struct Fn * n;
-	if (!b) {return a;}
-	if (!a) {return b;}
-	n = malloc(sizeof(*n));
-	n->parent = NULL;
-	n->value = 0;
-	n->left = a;
-	a->parent = n;
-	n->right = b;
-	b->parent = n;
-	reduce(n);
-	return n;
+	struct Fn *t = NULL;
+	struct Fn *q = NULL;
+	struct Fn **p = &t;
+	int x = !!(a && b);
+	while (a)
+	{
+		(*p) = malloc(sizeof(**p));
+		(*p)->depth = a->depth + x;
+		(*p)->value = a->value;
+		(*p)->tail = NULL;
+		q = (*p);
+		p = &(q->tail);
+		a = a->tail;
+	}
+	while (b)
+	{
+		(*p) = malloc(sizeof(**p));
+		(*p)->depth = b->depth + x;
+		(*p)->value = b->value;
+		(*p)->tail = NULL;
+		q = (*p);
+		p = &(q->tail);
+		b = b->tail;
+	}
+	reduce(t);
+	return t;
 }
 
 _Bool
-explode(struct Fn * n, int d)
+explode(struct Fn * n)
 {
-	struct Fn * p;
+	struct Fn * t;
+	struct Fn * p = NULL;
+	while (n && n->depth < 4) { p = n; n = n->tail; }
 	if (!n) { return 0; }
-	if (!n->left || !n->right) { return 0; }
-	if (d < 4)
-	{
-		if (explode(n->left, d+1)) {return 1;}
-		return explode(n->right, d+1);
+	/* we're at the left element of a pair to explode */
+	assert(n->tail);
+	if (p) { p->value += n->value; }
+	t = n->tail;
+	if (t->tail) {
+		t->tail->value += n->tail->value;
 	}
-	/* exploding */
-	/* add leftmost of pair to its nearest left neighbour */
-	p = n;
-	while (p->parent && p == p->parent->left)
-	{
-		p = p->parent;
-	}
-	p = p->parent;
-	if (p) { p = p->left; }
-	while (p && p->right)
-	{
-		p = p->right;
-	}
-	if (p) { p->value += n->left->value; }
-
-	/* add rightmost of pair to its nearest right neighbour */
-	p = n;
-	while (p->parent && p == p->parent->right)
-	{
-		p = p->parent;
-	}
-	p = p->parent;
-	if (p) { p = p->right; }
-	while (p && p->left)
-	{
-		p = p->left;
-	}
-	if (p) { p->value += n->right->value; }
-
-	/* cleanup */
-	freeFn(n->left);
-	n->left = NULL;
-	freeFn(n->right);
-	n->right = NULL;
+	n->tail = t->tail;
+	--(n->depth);
 	n->value = 0;
+	free(t);
 	return 1;
 }
 
 _Bool
 split(struct Fn * n)
 {
+	struct Fn * t;
+	while (n && n->value < 10) { n = n->tail; }
 	if (!n) { return 0; }
-	if (n->left && n->right)
-	{
-		if (split(n->left)) { return 1; }
-		return split(n->right);
-	}
-	if (n->value < 10) { return 0; }
-	n->left = malloc(sizeof(*n));
-	n->left->parent = n;
-	n->left->left = n->left->right = NULL;
-	n->left->value = (n->value) >> 1;
-	n->right = malloc(sizeof(*n));
-	n->right->parent = n;
-	n->right->left = n->right->right = NULL;
-	n->right->value = n->value - n->left->value;
-	n->value = 0;
+	/* we're at a regular number and need to split it */
+	++(n->depth);
+	t = malloc(sizeof(*t));
+	t->tail = n->tail;
+	t->depth = n->depth;
+	t->value = n->value;
+	n->value >>= 1;
+	t->value -= n->value;
+	n->tail = t;
 	return 1;
 }
 
@@ -169,89 +172,68 @@ struct Fn *
 readFn(void)
 {
 	struct Fn *n = malloc(sizeof(*n));
-	struct Fn *p = n;
+	struct Fn *t;
+	struct Fn **p = &n;
+	n->tail = 0;
+	n->depth = n->value = 0;
 	int c;
-	n->parent = n->left = n->right = NULL;
-	n->value = 0;
+	int d = -1;
 	while (EOF != (c = getchar()))
 	{
 		if (']' == c) {
-			assert(n->parent);
-			n = n->parent;
-			assert(n->left && n->right);
-			if (n == p) {break;}
+			assert(d>=0);
+			if (!d) { break; }
+			--d;
 		}
-		if ('[' == c)
-		{
-			assert(n && n->left == NULL);
-			n->left = malloc(sizeof(*n));
-			n->left->parent = n;
-			n = n->left;
-			n->left = n->right = NULL;
-			n->value = 0;
-		}
+		if ('[' == c) { ++d; continue; }
 		if (',' == c)
 		{
-			n = n->parent;
-			assert(n && n->right == NULL);
-			n->right = malloc(sizeof(*n));
-			n->right->parent = n;
-			n = n->right;
-			n->left = n->right = NULL;
-			n->value = 0;
+			(*p)->tail = malloc(sizeof(**p));
+			p = &((*p)->tail);
+			(*p)->tail = NULL;
+			(*p)->value = 0;
+			(*p)->depth = d;
 		}
 		if ('0' <= c && c <= '9')
 		{
-			n->value *= 10;
-			n->value += c - '0';
+			assert(*p);
+			(*p)->value *= 10;
+			(*p)->value += c - '0';
+			(*p)->depth = d;
 		}
 	}
-	if (c == EOF) {free(n); return NULL;}
-	return p;
+	if (c == EOF) {
+		while (n)
+		{
+			t = n->tail;
+			free(n);
+			n = t;
+		}
+		return NULL;
+	}
+	return n;
 }
 
 void
 freeFn(struct Fn * n)
 {
-	if (!n) { return; }
-	freeFn(n->left);
-	n->left = NULL;
-	freeFn(n->right);
-	n->right = NULL;
-	free(n);
+	struct Fn * t = NULL;
+	while (n)
+	{
+		t = n->tail;
+		free(n);
+		n = t;
+	}
+	return;
 }
 
 void
 printfn(struct Fn const n)
 {
-	if (!n.left || !n.right) {
-		printf("%d",n.value);
-		return;
-	}
-	printf("[");
-	printfn(*(n.left));
-	printf(",");
-	printfn(*(n.right));
-	printf("]");
-}
-
-struct Fn *
-copy(struct Fn const * const n)
-{
-	struct Fn *a = NULL;
-	if (!n) { return NULL; }
-	a = malloc(sizeof(*a));
-	a->parent = a->left = a->right = NULL;
-	a->value = n->value;
-	if (n->left)
-	{
-		a->left = copy(n->left);
-		a->left->parent = a;
-	}
-	if (n->right)
-	{
-		a->right = copy(n->right);
-		a->right->parent = a;
-	}
-	return a;
+	struct Fn const * x = &n;
+	while (x) { printf("%3d",x->value); x = x->tail; }
+	printf("\n");
+	x = &n;
+	while (x) { printf("%3d",x->depth); x = x->tail; }
+	printf("\n\n");
 }

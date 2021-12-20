@@ -1,4 +1,8 @@
 Year,Day,Part,Lang,Name,Result,Time (ms)
+2015,1,X,AArch64 ASM,Not Quite Lisp,138,6
+2015,1,2,AArch64 ASM,Not Quite Lisp,1771,
+2015,2,X,Shell,I Was Told There Would Be No Math,1606483,64
+2015,2,2,Shell,I Was Told There Would Be No Math,3842356,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

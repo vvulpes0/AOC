@@ -1,4 +1,8 @@
 Experiments/
+*.gif
+*.o
+*.hi
+*.txt
 01.lua
 03
 04
@@ -12,7 +16,3 @@ Experiments/
 18h
 19
 20
-*.gif
-*.o
-*.hi
-*.txt

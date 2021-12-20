@@ -41,5 +41,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,18,2,C,Snailfish,4559,
 2021,19,X,Haskell,Beacon Scanner,315,11525
 2021,19,2,Haskell,Beacon Scanner,13192,
-2021,20,X,Haskell,Trench Map,5786,1425
+2021,20,X,Haskell,Trench Map,5786,875
 2021,20,2,Haskell,Trench Map,16757,

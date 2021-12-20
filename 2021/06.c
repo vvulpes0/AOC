@@ -26,7 +26,7 @@ main(int argc, char** argv)
 			{
 				t += fish[j];
 			}
-			printf("%lu\n", t);
+			printf("%lu\t", t);
 		}
 		t = fish[0];
 		for (j = 0; j < 8; ++j)

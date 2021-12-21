@@ -43,3 +43,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,19,2,Haskell,Beacon Scanner,13192,
 2021,20,X,Haskell,Trench Map,5786,875
 2021,20,2,Haskell,Trench Map,16757,
+2021,21,X,Haskell,Dirac Dice,7133238,187
+2021,21,2,Haskell,Dirac Dice,92399285032143,

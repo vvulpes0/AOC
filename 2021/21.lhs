@@ -25,7 +25,7 @@
 > doa, dob :: Int -> Int -> Integer
 > doa = curry (fromIntegral . flip go rolls . mboth ((,) 0))
 > dob = curry ( uncurry max . mboth (sum . Map.elems)
->             . Map.partitionWithKey (\(a,_) _ -> fst a > 20)
+>             . Map.partitionWithKey (flip (const ((> 20) . fst . fst)))
 >             . tick True . flip Map.singleton 1 . mboth ((,) 0))
 
 > rolls :: [Int]

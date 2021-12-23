@@ -47,5 +47,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,21,2,Haskell,Dirac Dice,92399285032143,
 2021,22,X,Haskell,Reactor Reboot,606484,52
 2021,22,2,Haskell,Reactor Reboot,1162571910364852,
-2021,23,X,Haskell,Amphipod,18300,1845
+2021,23,X,Haskell,Amphipod,18300,1289
 2021,23,2,Haskell,Amphipod,50190,

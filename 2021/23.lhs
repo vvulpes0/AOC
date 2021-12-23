@@ -2,9 +2,9 @@
 
 > import Data.Bifunctor (bimap, first)
 > import Data.List (intercalate,transpose)
-> import Data.Map.Lazy (Map, (!), (!?))
+> import Data.Map.Strict (Map, (!), (!?))
 > import Data.Maybe (catMaybes,isNothing)
-> import qualified Data.Map.Lazy as Map
+> import qualified Data.Map.Strict as Map
 
 > type Board = (Int,([Maybe Int],[[Int]]))
 

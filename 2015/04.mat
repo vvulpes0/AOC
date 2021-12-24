@@ -1,0 +1,10 @@
+s = fscanf(stdin, '%s');
+i = 1;
+while !strcmp(substr(hash('MD5',strcat(s,num2str(i))),1,5),'00000')
+  i = i+1;
+endwhile
+printf('%d\t',i)
+while !strcmp(substr(hash('MD5',strcat(s,num2str(i))),1,6),'000000')
+  i = i+1;
+endwhile
+disp(i)

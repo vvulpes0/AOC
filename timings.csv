@@ -5,6 +5,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,2,2,Shell,I Was Told There Would Be No Math,3842356,
 2015,3,X,Java,Perfectly Spherical Houses in a Vacuum,2572,114
 2015,3,2,Java,Perfectly Spherical Houses in a Vacuum,2631,
+2015,4,X,Octave,The Ideal Stocking Stuffer,117946,2139290
+2015,4,2,Octave,The Ideal Stocking Stuffer,3938038,
+2015,5,X,Squirrel,Doesn't He Have Intern-Elves For This?,255,92
+2015,5,2,Squirrel,Doesn't He Have Intern-Elves For This?,55,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12
@@ -51,3 +55,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,22,2,Haskell,Reactor Reboot,1162571910364852,
 2021,23,X,Haskell,Amphipod,18300,1289
 2021,23,2,Haskell,Amphipod,50190,
+2021,24,X,Haskell,Arithmetic Logic Unit,99919692496939,24
+2021,24,2,Haskell,Arithmetic Logic Unit,81914111161714,

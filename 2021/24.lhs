@@ -1,7 +1,6 @@
 > module Main (main) where
 
 > import Data.List (intercalate,sort)
-> import Debug.Trace (trace)
 
 > main = interact (f . pairs . getRepr . lines)
 >     where f x = unlines . pure . intercalate "\t"
@@ -41,15 +40,3 @@
 > minimize ((b,a,d):xs)
 >     | d < 0 = (a,1-d) : (b,1) : minimize xs
 >     | otherwise = (a,1) : (b,1+d) : minimize xs
-
-For checking:
-
-> z d a s = z' 0 d a s
->     where z' n [] _ _ _ = n
->           z' n _ [] _ _ = n
->           z' n _ _ [] _ = n
->           z' n _ _ _ [] = n
->           z' n (d:ds) (a:as) (s:ss) (w:ws)
->               | (n `mod` 26) + a == w = z' n' ds as ss ws
->               | otherwise = z' (26*n' + w + s) ds as ss ws
->               where n' = n `div` d

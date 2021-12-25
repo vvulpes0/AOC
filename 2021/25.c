@@ -4,7 +4,7 @@
 #define WIDTH 139
 #define HEIGHT 137
 
-_Bool update(char * const * const);
+static _Bool update(char * const * const);
 
 int
 main(void)

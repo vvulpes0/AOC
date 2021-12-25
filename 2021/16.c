@@ -15,19 +15,19 @@ struct PacketList
 	struct Packet head;
 };
 
-long sum(struct PacketList const *);
-long product(struct PacketList const *);
-long minimum(struct PacketList const *);
-long maximum(struct PacketList const *);
-long greater(struct PacketList const *);
-long lesser(struct PacketList const *);
-long equal(struct PacketList const *);
+static long sum(struct PacketList const *);
+static long product(struct PacketList const *);
+static long minimum(struct PacketList const *);
+static long maximum(struct PacketList const *);
+static long greater(struct PacketList const *);
+static long lesser(struct PacketList const *);
+static long equal(struct PacketList const *);
 struct Packet parse_packet(int *, int *, int *);
-int getbit(int *, int *, int *);
-long read_literal(int *, int *, int *);
-long read_operator(int *, int *, int *, char, struct PacketList **);
-void free_packets(struct PacketList *);
-int sum_versions(struct Packet const);
+static int getbit(int *, int *, int *);
+static long read_literal(int *, int *, int *);
+static long read_operator(int *, int *, int *, char, struct PacketList **);
+static void free_packets(struct PacketList *);
+static int sum_versions(struct Packet const);
 
 int
 main(void)

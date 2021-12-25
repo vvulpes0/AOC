@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-int update(signed char * const);
-int update_cell(signed char * const, int const, int const);
+static int update(signed char * const);
+static int update_cell(signed char * const, int const, int const);
 
 int
 main(void)

@@ -57,4 +57,4 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,23,2,Haskell,Amphipod,50190,
 2021,24,X,Haskell,Arithmetic Logic Unit,99919692496939,24
 2021,24,2,Haskell,Arithmetic Logic Unit,81914111161714,
-2021,24,X,C,Sea Cucumber,305,62
+2021,24,X,C,Sea Cucumber,305,58

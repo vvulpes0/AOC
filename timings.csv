@@ -9,6 +9,12 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,4,2,Octave,The Ideal Stocking Stuffer,3938038,
 2015,5,X,Squirrel,Doesn't He Have Intern-Elves For This?,255,92
 2015,5,2,Squirrel,Doesn't He Have Intern-Elves For This?,55,
+2015,6,X,Python,Probably a Fire Hazard,400410,8120
+2015,6,2,Python,Probably a Fire Hazard,15343601,
+2015,7,X,Lua,Some Assembly Required,3176,9
+2015,7,2,Lua,Some Assembly Required,14710,
+2015,8,X,Synacor,Matchsticks,1342,8
+2015,8,2,Synacor,Matchsticks,2074,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

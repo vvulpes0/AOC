@@ -54,14 +54,8 @@ END {
 	a = 0
 	y = 2000000
 	dorow(y)
-	for (i in beac) {
-		split(i, temp, ",")
-		if (temp[2] == y) a--
-	}
-	for (i in ranges) {
-		split(i, temp, ",")
-		a += temp[2] - temp[1] + 1
-	}
+	for (i in beac)   { split(i,temp,","); a -= (temp[2] == y) }
+	for (i in ranges) { split(i,temp,","); a += temp[2]-temp[1]+1 }
 	print "A:",a
 	for (s in sens) {
 		split(s,ss,",")

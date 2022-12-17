@@ -43,7 +43,7 @@ function hashstate(  i,q,t) {
 	if (length(field) < 16) { return p " " mv }
 	t = 0
 	# 10 is arbitrary but sufficient, makes result fit in 64 bits
-	for (i = length(field) - 1; i >= length(field)-10; i--) {
+	for (i = length(field) - 1; i > length(field)-10; i--) {
 		t *= 2**w
 		t += field[i]
 	}

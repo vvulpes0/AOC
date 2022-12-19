@@ -100,3 +100,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2022,17,2,AWK,Pyroclastic Flow,1535483870924,
 2022,18,X,AWK,Boiling Boulders,4192,123
 2022,18,2,AWK,Boiling Boulders,2520,
+2022,19,X,AWK,Not Enough Minerals,790,1047930
+2022,19,2,AWK,Not Enough Minerals,7350,

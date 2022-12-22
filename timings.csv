@@ -106,3 +106,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2022,20,2,AWK,Grove Positioning System,7350,7973051839072
 2022,21,X,AWK,Monkey Math,152479825094094,20
 2022,21,2,AWK,Monkey Math,3360561285172,
+2022,22,X,AWK,Monkey Map,136054,114
+2022,22,2,AWK,Monkey Map,122153,

@@ -42,54 +42,23 @@ function trywrap(d,d1,d2,r,c,  x,p,t) {
 	changed = 1
 	return 1
 }
-function foldnet(r,c,  done,f,p,t,tmp,x) {
-	if (!(0 ":" r ":" c in out)) {
-		done = 0
-		if (r ":" (c+1) in present) {
-			changed = done = 1
-			out[0 ":" r ":" c] = r ":" (c+1)
-			face[0 ":" r ":" c] = 0
-			out[2 ":" r ":" (c+1)] = r ":" c
-			face[2 ":" r ":" (c+1)] = 2
+function foldnet(r,c,  i,done,dc,dr,p) {
+	for (i = 0; i < 4; i++) {
+		dc = (i == 0) - (i == 2)
+		dr = (i == 1) - (i == 3)
+		p = (r+dr) ":" (c+dc)
+		if (!(i ":" r ":" c in out)) {
+			done = 0
+			if (p in present) {
+				changed = done = 1
+				out[i ":" r ":" c] = p
+				face[i ":" r ":" c] = i
+				out[(i+2)%4 ":" p] = r ":" c
+				face[(i+2)%4 ":" p] = (i+2)%4
+			}
+			if (!done) done = trywrap(i,(i+3)%4,1,r,c)
+			if (!done) done = trywrap(i,(i+1)%4,3,r,c)
 		}
-		if (!done) done = trywrap(0,3,1,r,c)
-		if (!done) done = trywrap(0,1,3,r,c)
-	}
-	if (!(1 ":" r ":" c in out)) {
-		done = 0
-		if ((r+1) ":" c in present) {
-			changed = done = 1
-			out[1 ":" r ":" c] = (r+1) ":" c
-			face[1 ":" r ":" c] = 1
-			out[3 ":" (r+1) ":" c] = r ":" c
-			face[3 ":" (r+1) ":" c] = 3
-		}
-		if (!done) done = trywrap(1,0,1,r,c)
-		if (!done) done = trywrap(1,2,3,r,c)
-	}
-	if (!(2 ":" r ":" c in out)) {
-		done = 0
-		if (r ":" (c-1) in present) {
-			changed = done = 1
-			out[2 ":" r ":" c] = r ":" (c-1)
-			face[2 ":" r ":" c] = 2
-			out[0 ":" r ":" (c-1)] = r ":" c
-			face[0 ":" r ":" (c-1)] = 0
-		}
-		if (!done) done = trywrap(2,1,1,r,c)
-		if (!done) done = trywrap(2,3,3,r,c)
-	}
-	if (!(3 ":" r ":" c in out)) {
-		done = 0
-		if ((r-1) ":" c in present) {
-			changed = done = 1
-			out[3 ":" r ":" c] = (r-1) ":" c
-			face[3 ":" r ":" c] = 3
-			out[1 ":" (r-1) ":" c] = r ":" c
-			face[1 ":" (r-1) ":" c] = 1
-		}
-		if (!done) done = trywrap(3,0,3,r,c)
-		if (!done) done = trywrap(3,2,1,r,c)
 	}
 }
 function move3(i, ncr,ncc,nr,nc,nf,tmp) {

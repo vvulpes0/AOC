@@ -25,16 +25,16 @@ function check(x) {
 	return check()
 }
 /^$/ { ind++; if (check() > 0) a += ind; next }
-{ s1 = s2; packets[length(packets)] = s2 = $0 }
+{ s1 = s2; packets[np++] = s2 = $0 }
 END {
 	ind++
 	if (check() == 1) a += ind
 	print "A:",a
-	packets[length(packets)] = "[[2]]"
-	packets[length(packets)] = "[[6]]"
+	packets[np++] = "[[2]]"
+	packets[np++] = "[[6]]"
 	b = 1
-	for (i = 0; i < length(packets); i++) {
-		for (j = i + 1; j < length(packets); j++) {
+	for (i = 0; i < np; i++) {
+		for (j = i + 1; j < np; j++) {
 			s1 = x = packets[i]
 			s2 = packets[j]
 			if (check() >= 0) continue

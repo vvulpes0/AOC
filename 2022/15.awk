@@ -8,11 +8,11 @@ function overlap(m1,x1,m2,x2) { return m1<m2?m2<=x1:m2<m1?m1<=x2:1 }
 function merge(rs, mins, maxs, i, j, t) {
 	for (i in rs) {
 		split(i, temp, ",")
-		mins[length(mins)] = temp[1]
-		maxs[length(maxs)] = temp[2]
+		mins[nrange] = temp[1]
+		maxs[nrange++] = temp[2]
 	}
-	for (i = 0; i < length(mins); i++) {
-		for (j = i + 1; j < length(mins); j++) {
+	for (i = 0; i < nrange; i++) {
+		for (j = i + 1; j < nrange; j++) {
 			if (mins[i] < mins[j]) continue
 			if (mins[i]==mins[j] && maxs[i]<=maxs[j]) continue
 			t = mins[i]
@@ -23,19 +23,20 @@ function merge(rs, mins, maxs, i, j, t) {
 			maxs[j] = t
 		}
 	}
-	for (i = 0; i < length(mins) - 1; i++) {
+	for (i = 0; i < nrange - 1; i++) {
 		if (!overlap(mins[i],maxs[i],mins[i+1],maxs[i+1])) continue
 		maxs[i] = max(maxs[i], maxs[i+1])
-		for (j = i + 1; j < length(mins) - 1; j++) {
+		for (j = i + 1; j < nrange - 1; j++) {
 			mins[j] = mins[j + 1]
 			maxs[j] = maxs[j + 1]
 		}
-		delete mins[length(mins) - 1]
-		delete maxs[length(maxs) - 1]
+		delete mins[nrange - 1]
+		delete maxs[nrange - 1]
+		nrange--
 		i--
 	}
 	delete rs
-	for (i = 0; i < length(mins); i++) rs[mins[i] "," maxs[i]]
+	for (i = 0; i < nrange; i++) rs[mins[i] "," maxs[i]]
 }
 function dorow(y,s,temp,dx,dy,rm,rx) {
 	for (s in sens) {
@@ -66,15 +67,15 @@ END {
 			d = sens[s] + sens[t] + 2
 			if (dist(ss[1],ss[2],tt[1],tt[2]) != d) continue
 			lm = tt[2]<ss[2]?1:-1
-			m[length(m)] = lm
-			b[length(b)] = ss[2]-lm*(sens[s]+1+ss[1])
+			m[nm++] = lm
+			b[nb++] = ss[2]-lm*(sens[s]+1+ss[1])
 			break;
 		}
 	}
 	w = 4000000
 	done = 0
-	for (i = 0; i < length(m) && !done; i++) {
-		for (j = i + 1; j < length(m) && !done; j++) {
+	for (i = 0; i < nm && !done; i++) {
+		for (j = i + 1; j < nm && !done; j++) {
 			mm = m[i] - m[j]
 			bb = b[j] - b[i]
 			if (mm == 0) continue

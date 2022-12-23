@@ -33,5 +33,6 @@ END {
 		x = l * r * u * d
 		b = x > b ? x : b
 	}
-	printf "A: %s\nB: %s\n", length(visible), b
+	for (i in visible) a++
+	printf "A: %s\nB: %s\n", a, b
 }

@@ -13,6 +13,7 @@
 		if (x != "#") continue
 		wall[NR ":" i]
 	}
+	nrows++
 }
 function move(i, nr,nc) {
 	for (i; i; i--) {
@@ -119,7 +120,6 @@ END {
 		for (i in present) { split(i,p,":"); foldnet(p[1],p[2]) }
 	} while (changed)
 
-	nrows = length(rmn)
 	c = cmn[1]; r = rmn[c]; f = 0
 	cellr = (r-1)/size
 	cellc = (c-1)/size
@@ -128,7 +128,7 @@ END {
 	x = int(moves)
 	move(x); move3(x)
 	sub("^[0-9][0-9]*","",moves)
-	while (length(moves)) {
+	while (moves != "") {
 		x = substr(moves,1,1)
 		f += (x == "R") + 3*(x == "L")
 		f %= 4

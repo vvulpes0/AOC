@@ -20,4 +20,8 @@ BEGIN { for (i = 0; i < 10; i++) { x[i] = y[i] = 0 } update() }
 /U/   { for (i = 0; i < $2; i++) { y[0]--; update() } }
 /L/   { for (i = 0; i < $2; i++) { x[0]--; update() } }
 /D/   { for (i = 0; i < $2; i++) { y[0]++; update() } }
-END { printf "A: %s\nB: %s\n", length(a), length(b) }
+END {
+	for (i in a) la++
+	for (i in b) lb++
+	printf "A: %s\nB: %s\n", la, lb
+}

@@ -3,7 +3,8 @@ BEGIN {FS="[ ,;=]*"}
 { rates[$2] = $6 }
 { tunnels[$2] = $11 }
 { for (i = 12; i <= NF; i++) tunnels[$2] = tunnels[$2] " " $i }
-($6 != 0) { destinations[$2] = 2**length(destinations) }
+($6 != 0) { destinations[$2] = 2**(ndests++) }
+function empty(a, i) { for (i in a) return 0; return 1 }
 function fill(src,n,d,  i,post) {
 	split(tunnels[n], post, " ")
 	distances[src ":" n] = d
@@ -21,12 +22,12 @@ function bfs(  sources,d,i,j) {
 			delete open
 			for (j in nopen) open[j]
 			delete nopen
-		} while (length(open))
+		} while (!empty(open))
 	}
 }
 function insert(p,v) { if (!(p in valves && valves[p]>=v)) valves[p]=v }
 function search(loc,open,t,maxv,path,c,  d,i,j,so,v,x) {
-	if (!length(open)) { if (c) insert(path, maxv); return maxv }
+	if (empty(open)) { if (c) insert(path, maxv); return maxv }
 	x = 0
 	for (i in open) {
 		if (!(loc ":" i in distances)) continue
@@ -52,8 +53,7 @@ END {
 	bfs()
 	print "A:",search("AA", destinations, 30, 0, "")
 	search("AA", destinations, 26, 0, "", 1)
-	for (i in valves) { vv[length(vv)] = i }
-	mv = length(vv)
+	for (i in valves) { vv[mv++] = i }
 	for (i = 0; i < mv - 1; i++) {
 		for (j = i + 1; j < mv; j++ ) {
 			if (overlap(vv[i],vv[j])) continue

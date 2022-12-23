@@ -1,5 +1,6 @@
 #!/usr/bin/env awk -f
 BEGIN { FS = "," }
+function empty(a,  i) { for (i in a) return 0; return 1}
 {
 	cubes[$0] = 0
 	for (i = 1; i <= NF; i++) {
@@ -34,6 +35,6 @@ END {
 		}
 		delete open
 		for (i in tmp) open[i]
-	} while (length(open))
+	} while (!empty(open))
 	printf "A: %s\nB: %s\n",a,b
 }

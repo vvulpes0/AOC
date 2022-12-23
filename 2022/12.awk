@@ -32,6 +32,7 @@ function update(i,j,mn,h,x,u,v) {
 	x = i "," j
 	if (!(x in distances) || mn < distances[x]) insert(j, i, mn)
 }
+function empty(a, i) { for (i in a) return 0; return 1 }
 END {
 	insert(ex, ey, 0)
 	do {
@@ -39,7 +40,7 @@ END {
 		delete open
 		for (i in nopen) if (!(i in distances)) open[i]
 		delete nopen
-		do { update() } while (length(open))
-	} while (length(nopen))
+		do { update() } while (!empty(open))
+	} while (!empty(nopen))
 	printf "A: %s\nB: %s\n", distances[sy "," sx], b
 }

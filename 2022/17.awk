@@ -2,10 +2,11 @@
 BEGIN { FS = "" }
 function settle(rows,  i,t) {
 	for (i = 0; i < heights[p]; i++) field[y+i+1] += rows[1+i]
+	if (y+i+1 > maxh) maxh = y+i+1
 	s++
-	p = s % length(piece) + 1
+	p = s % npiece + 1
 	x = w - widths[p] - 2
-	y = length(field) + 3
+	y = maxh + 3
 	t = hashstate()
 	if (t in states) cycl = s - states[t]
 	states[t] = s
@@ -40,10 +41,10 @@ function overlap(a,b) {
 }
 function nextspawn() { while (!move($(((mv++)%NF) + 1))); }
 function hashstate(  i,q,t) {
-	if (length(field) < 16) { return p " " mv }
+	if (maxh < 16) { return p " " mv }
 	t = 0
 	# 10 is arbitrary but sufficient, makes result fit in 64 bits
-	for (i = length(field) - 1; i > length(field)-10; i--) {
+	for (i = maxh - 1; i > maxh-10; i--) {
 		t *= 2**w
 		t += field[i]
 	}
@@ -52,21 +53,21 @@ function hashstate(  i,q,t) {
 END {
 	split("1 3 3 4 2", heights, " ")
 	split("4 3 3 1 2", widths, " ")
-	split("15,2 7 2,7 1 1,1 1 1 1,3 3",piece,",")
+	npiece=split("15,2 7 2,7 1 1,1 1 1 1,3 3",piece,",")
 	w = 7
 	p = 1
 	x = w - widths[p] - 2
-	y = length(field) + 3
+	y = maxh + 3
 	while (s < 2022) { nextspawn() }
-	print "A:", length(field)
+	print "A:", maxh
 	while (!cycl) nextspawn()
 	t = s
-	h = length(field)
+	h = maxh
 	bign = 1000000000000 - t
 	for (i = 0; i < cycl; i++) nextspawn()
-	dh2 = length(field)
+	dh2 = maxh
 	dh = dh2 - h
 	for (i = 0; i < bign%cycl; i++) nextspawn()
-	dh2 = length(field) - dh2
+	dh2 = maxh - dh2
 	print "B:", h+dh2+dh*int(bign/cycl)
 }

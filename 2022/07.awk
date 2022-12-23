@@ -1,8 +1,8 @@
 #!/usr/bin/env awk -f
-function cd(s) {
+function cd(s,  n) {
 	if (s ~ /^\//) { dir = "/" }
-	split(s,components,"/")
-	for (i = 1; i <= length(components); i++) {
+	n = split(s,components,"/")
+	for (i = 1; i <= n; i++) {
 		if (components[i] == "..") {
 			sub("/[^/]*$","",dir)
 			continue

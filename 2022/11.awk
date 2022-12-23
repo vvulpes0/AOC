@@ -1,6 +1,6 @@
 #!/usr/bin/env awk -f
 BEGIN { bigq = 1 }
-/^Monkey/ { monkey = int($2) }
+/^Monkey/ { monkey = int($2); nmonkey++ }
 /Starting/ {
 	items[monkey] = substr($0,index($0,":") + 2)
 	gsub(",","",items[monkey])
@@ -13,8 +13,7 @@ BEGIN { bigq = 1 }
 function gcd(a,b) { return (b ? gcd(b, a % b) : a) }
 function op(x,o,n) { return o[n] == "old" ? x : o[n] }
 function domonkey(n,it,ins,d,x,t) {
-	split(it[n],temp)
-	ins[n] += length(temp)
+	ins[n] += split(it[n],temp)
 	while (it[n] != "") {
 		x = int(it[n])
 		sub("[^ ]* *", "", it[n])
@@ -31,12 +30,12 @@ function insert(x,m) {
 }
 END {
 	for (i = 1; i <= 10000; i++) {
-		for (n = 0; n <= length(divisor); n++) {
+		for (n = 0; n <= nmonkey; n++) {
 			domonkey(n,itemsb,inspectionsb,1)
 			if (i <= 20) domonkey(n,items,inspections,3)
 		}
 	}
-	for (i = 0; i <= length(divisor); i++) {
+	for (i = 0; i <= nmonkey; i++) {
 		insert(inspections[i], a)
 		insert(inspectionsb[i], b)
 	}

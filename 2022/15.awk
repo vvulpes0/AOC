@@ -94,5 +94,5 @@ END {
 			done = !sensed
 		}
 	}
-	print "B:", 4000000 * x + y
+	print "B:", 4*x+int(y/1000000) (y%1000000)
 }

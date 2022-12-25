@@ -1,5 +1,11 @@
 #!/usr/bin/awk -f
 BEGIN { FS = "" }
+function atoi(n,  t) {
+	t = ""
+	while (n) { t=(n%10) t; n=int(n/10) }
+	return t
+}
+function p2(n,  i,x) { x=1; for (i=0; i<n; i++) x*=2; return x }
 function settle(rows,  i,t) {
 	for (i = 0; i < heights[p]; i++) field[y+i+1] += rows[1+i]
 	if (y+i+1 > maxh) maxh = y+i+1
@@ -18,10 +24,10 @@ function move(m,  nx,i,temp) {
 	split(piece[p],temp," ")
 	for (i = 0; i < heights[p] && nx != x; i++) {
 		if (!(y + i in field)) break
-		if (overlap(temp[i+1]*(2**nx),field[y+i])) nx = x
+		if (overlap(temp[i+1]*p2(nx),field[y+i])) nx = x
 	}
 	x = nx
-	for (i in temp) { temp[i] *= 2**x }
+	for (i in temp) { temp[i] *= p2(x) }
 	y--
 	if (y<0) return settle(temp)
 	for (i in temp) {
@@ -45,7 +51,7 @@ function hashstate(  i,q,t) {
 	t = 0
 	# 10 is arbitrary but sufficient, makes result fit in 64 bits
 	for (i = maxh - 1; i > maxh-10; i--) {
-		t *= 2**w
+		t *= p2(w)
 		t += field[i]
 	}
 	return p " " (mv%NF) " " t
@@ -69,5 +75,5 @@ END {
 	dh = dh2 - h
 	for (i = 0; i < bign%cycl; i++) nextspawn()
 	dh2 = maxh - dh2
-	print "B:", h+dh2+dh*int(bign/cycl)
+	print "B:", atoi(h+dh2+dh*int(bign/cycl))
 }

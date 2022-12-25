@@ -31,5 +31,11 @@ END {
 	}
 	for (i = 0; i < 10; i++) mix()
 	for (i = 0; i < NR; i++) { shf[i] = n; n = succ[n] }
-	print "B:",grove()
+	x = grove()
+	b = ""
+	while (x) {
+		b = (x%10) b
+		x = int(x/10)
+	}
+	print "B:",b
 }

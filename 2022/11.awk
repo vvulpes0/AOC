@@ -39,5 +39,9 @@ END {
 		insert(inspections[i], a)
 		insert(inspectionsb[i], b)
 	}
-	printf "A: %s\nB: %s\n", a[1] * a[2], b[1] * b[2]
+	x1 = b[1] * int(b[2]/1000)
+	x2 = b[1] * (b[2]%1000)
+	x1 += int(x2/1000)
+	x2 %= 1000
+	printf "A: %s\nB: %s\n", a[1] * a[2], x1 x2
 }

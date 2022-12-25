@@ -3,15 +3,19 @@ BEGIN {FS="[ ,;=]*"}
 { rates[$2] = $6 }
 { tunnels[$2] = $11 }
 { for (i = 12; i <= NF; i++) tunnels[$2] = tunnels[$2] " " $i }
-($6 != 0) { destinations[$2] = 2**(ndests++) }
+($6 != 0) {
+	destinations[$2] = 1
+	for (i = 0; i < ndests; i++) destinations[$2] *= 2
+	ndests++
+}
 function empty(a, i) { for (i in a) return 0; return 1 }
 function fill(src,n,d,  i,post) {
 	split(tunnels[n], post, " ")
-	distances[src ":" n] = d
+	if (!(src ":" n in distances)) distances[src ":" n] = d
 	for (i in post) if (!(src ":" post[i] in distances)) nopen[post[i]]
 }
 function bfs(  sources,d,i,j) {
-	sources["AA"];
+	sources["AA"]
 	for (i in destinations) sources[i]
 	for (i in sources) {
 		d = 0

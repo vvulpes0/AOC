@@ -4,7 +4,7 @@ function value(x) {
 	return index(z,x)
 }
 {
-	h = length/2
+	h = 1/2 * length
 	right=substr($0,h+1,h)
 	for (i = 1; i <= h; i++) {
 		x = substr($0,i,1)

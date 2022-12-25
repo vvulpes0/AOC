@@ -66,50 +66,50 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2021,25,X,C,Sea Cucumber,305,58
 2022,1,X,6502 ASM,Calorie Counting,71023,2000
 2022,1,2,6502 ASM,Calorie Counting,206289,
-2022,2,X,AWK,Rock Paper Scissors,10595,16
+2022,2,X,AWK,Rock Paper Scissors,10595,7
 2022,2,2,AWK,Rock Paper Scissors,9541,
-2022,3,X,AWK,Rucksack Reorganization,7553,12
+2022,3,X,AWK,Rucksack Reorganization,7553,7
 2022,3,2,AWK,Rucksack Reorganization,2758,
-2022,4,X,AWK,Camp Cleanup,582,11
+2022,4,X,AWK,Camp Cleanup,582,7
 2022,4,2,AWK,Camp Cleanup,893,
-2022,5,X,AWK,Supply Stacks,PSNRGBTFT,15
+2022,5,X,AWK,Supply Stacks,PSNRGBTFT,9
 2022,5,2,AWK,Supply Stacks,BNTZFPMMW,
-2022,6,X,AWK,Tuning Trouble,1042,25
+2022,6,X,AWK,Tuning Trouble,1042,12
 2022,6,2,AWK,Tuning Trouble,2980,
-2022,7,X,AWK,No Space Left On Device,1908462,15
+2022,7,X,AWK,No Space Left On Device,1908462,9
 2022,7,2,AWK,No Space Left On Device,3979145,
-2022,8,X,AWK,Treetop Tree House,1816,104
+2022,8,X,AWK,Treetop Tree House,1816,56
 2022,8,2,AWK,Treetop Tree House,383520,
-2022,9,X,AWK,Rope Bridge,5960,190
+2022,9,X,AWK,Rope Bridge,5960,72
 2022,9,2,AWK,Rope Bridge,2327,
-2022,10,X,AWK,Cathode-Ray Tube,14360,8
+2022,10,X,AWK,Cathode-Ray Tube,14360,6
 2022,10,2,AWK,Cathode-Ray Tube,BGKAEREZ,
-2022,11,X,AWK,Monkey in the Middle,90294,2135
+2022,11,X,AWK,Monkey in the Middle,90294,592
 2022,11,2,AWK,Monkey in the Middle,18170818354,
-2022,12,X,AWK,Hill Climbing Algorithm,481,83
+2022,12,X,AWK,Hill Climbing Algorithm,481,54
 2022,12,2,AWK,Hill Climbing Algorithm,480,
-2022,13,X,AWK,Distress Signal,6076,391
+2022,13,X,AWK,Distress Signal,6076,92
 2022,13,2,AWK,Distress Signal,24805,
-2022,14,X,AWK,Regolith Reservoir,719,3586
+2022,14,X,AWK,Regolith Reservoir,719,1486
 2022,14,2,AWK,Regolith Reservoir,23390,
-2022,15,X,AWK,Beacon Exclusion Zone,5716881,12
+2022,15,X,AWK,Beacon Exclusion Zone,5716881,8
 2022,15,2,AWK,Beacon Exclusion Zone,10852583132904,
-2022,16,X,AWK,Proboscidea Volcanium,2077,18002
+2022,16,X,AWK,Proboscidea Volcanium,2077,8180
 2022,16,2,AWK,Proboscidea Volcanium,2741,
-2022,17,X,AWK,Pyroclastic Flow,3085,183
+2022,17,X,AWK,Pyroclastic Flow,3085,116
 2022,17,2,AWK,Pyroclastic Flow,1535483870924,
-2022,18,X,AWK,Boiling Boulders,4192,123
+2022,18,X,AWK,Boiling Boulders,4192,73
 2022,18,2,AWK,Boiling Boulders,2520,
-2022,19,X,AWK,Not Enough Minerals,790,1047930
+2022,19,X,AWK,Not Enough Minerals,790,395390
 2022,19,2,AWK,Not Enough Minerals,7350,
-2022,20,X,AWK,Grove Positioning System,4914,11650
-2022,20,2,AWK,Grove Positioning System,7350,7973051839072
-2022,21,X,AWK,Monkey Math,152479825094094,20
+2022,20,X,AWK,Grove Positioning System,4914,4750
+2022,20,2,AWK,Grove Positioning System,7973051839072,
+2022,21,X,AWK,Monkey Math,152479825094094,10
 2022,21,2,AWK,Monkey Math,3360561285172,
-2022,22,X,AWK,Monkey Map,136054,114
+2022,22,X,AWK,Monkey Map,136054,57
 2022,22,2,AWK,Monkey Map,122153,
-2022,23,X,AWK,Unstable Diffusion,4068,19522
+2022,23,X,AWK,Unstable Diffusion,4068,9561
 2022,23,2,AWK,Unstable Diffusion,968,
-2022,24,X,AWK,Blizzard Basin,332,5462
+2022,24,X,AWK,Blizzard Basin,332,3755
 2022,24,2,AWK,Blizzard Basin,942,
-2022,25,X,AWK,Full of Hot Air,20-1-0=-2=-2220=0011,10
+2022,25,X,AWK,Full of Hot Air,20-1-0=-2=-2220=0011,6

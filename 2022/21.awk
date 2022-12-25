@@ -3,6 +3,11 @@ BEGIN { FS = "[: ][: ]*" }
 (NF == 4) { left[$1] = $2; op[$1] = $3; right[$1] = $4 }
 (NF == 2) { val[$1] = $2 }
 ($1 == "humn") { hum[$1] }
+function atoi(n,  t) {
+	t = ""
+	while (n) { t=(n%10) t; n=int(n/10) }
+	return t
+}
 function calc(n, temp) {
 	if (n in val) return val[n]
 	if (op[n] == "+") val[n] = calc(left[n]) + calc(right[n])
@@ -29,12 +34,12 @@ function solve(h,x) {
 	}
 }
 END {
-	print "A:",calc("root")
+	print "A:",atoi(calc("root"))
 	h = left["root"]
 	x = val[right["root"]]
 	if (right["root"] in hum) {
 		h = right["root"]
 		x = val[left["root"]]
 	}
-	print "B:",solve(h,x)
+	print "B:",atoi(solve(h,x))
 }

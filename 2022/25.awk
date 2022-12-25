@@ -1,6 +1,5 @@
 #!/usr/bin/env awk -f
-function s2d(s,  i,t)
-{
+function s2d(s,  i,t) {
 	t = 0
 	for (i = 1; i <= length(s); i++) {
 		t = 5*t + index("=-012",substr(s,i,1)) - 3

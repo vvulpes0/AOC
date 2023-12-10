@@ -12,6 +12,7 @@ Otherwise, each part is solved separately and each is timed alone.
 A part 2 line will still appear, sans timing, to contain its answer.
 
 Timings are taken from an Apple Mac Mini (M1, 2020)
+or Apple Macbook Air (M2, 2022)
 with 8-core ARM processor and 16GB of RAM.
 The methodology is not particularly precise,
 I just run something like the following until a stable value appears:

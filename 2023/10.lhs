@@ -11,13 +11,11 @@
 >   putStr "A: " >> print a >> putStr "B: " >> print b
 
 > solve :: String -> (Int, Int)
-> solve s = (d, i)
+> solve s = fmap (flip pip grid) . maximalSDist
+>           . Set.fromDistinctAscList . catMaybes $ concat grid
 >     where source = mkZip $ lines s
 >           z = down . Zip [] Nothing $ ggraph 0 z source
 >           grid = flatten $ fmap flatten z
->           (d, nodes) = maximalSDist . Set.fromDistinctAscList
->                        . catMaybes $ concat grid
->           i = pip nodes grid
 
 > data Zipper a = Zip {pre :: [a], at :: Maybe a, post :: [a]}
 > instance Functor Zipper where
@@ -66,7 +64,7 @@
 >           rso = right source
 >           rsk = right seek
 >           isBarrier x
->               = x `elem` "LJ|" -- spse 1/4 way into cell
+>               = x `elem` "|LJ" -- spse 1/4 way into cell
 >                 || (x == 'S'   -- S only barrier if equiv~ barrier
 >                     && cursor (up source) `elem` map Just "|7F")
 >           connections x
@@ -96,16 +94,14 @@
 >     where next = Set.unions $ Set.map neighbours open
 
 > pip :: IntSet -> [[Cell]] -> Int
-> pip loop = sum . map (pipRow loop 0 False)
-> pipRow :: IntSet -> Int -> Bool -> [Cell] -> Int
-> pipRow loop d inside (x:xs)
->     = case x of
->         Nothing -> pipRow loop d' inside xs
->         Just n  -> if nid n `IS.member` loop
->                    then pipRow loop d (inside /= snd (dat n)) xs
->                    else pipRow loop d' inside xs
->     where d' = d `seq` if inside then d+1 else d
-> pipRow _ d _ _ = d
+> pip loop = sum . map (pipRow loop)
+> pipRow :: IntSet -> [Cell] -> Int
+> pipRow loop = snd . foldr f (False, 0) . map g
+>     where f mb (x,y)
+>               = maybe (x, if x then y+1 else y) (\b -> (x /= b, y)) mb
+>           g (Just n) = if nid n `IS.member` loop
+>                        then Just (snd (dat n)) else Nothing
+>           g _ = Nothing
 
 > cat :: [a] -> [a] -> [[a]]
 > cat xs ys = [[x,y] | x <- xs, y <- ys]

@@ -1,7 +1,9 @@
 > module Main (main) where
 > import Data.Maybe (catMaybes)
+> import Data.IntSet (IntSet)
 > import Data.Set (Set)
 > import qualified Data.Set as Set
+> import qualified Data.IntSet as IS
 
 > main :: IO ()
 > main = do
@@ -15,7 +17,7 @@
 >           grid = flatten $ fmap flatten z
 >           (d, nodes) = maximalSDist . Set.fromDistinctAscList
 >                        . catMaybes $ concat grid
->           i = pip nodes 0 grid
+>           i = pip nodes grid
 
 > data Zipper a = Zip {pre :: [a], at :: Maybe a, post :: [a]}
 > instance Functor Zipper where
@@ -83,23 +85,23 @@
 >                   then Just down else Nothing
 >                 ]
 
-> maximalSDist :: Set (Node (Bool, t)) -> (Int, Set (Node (Bool, t)))
+> maximalSDist :: Set (Node (Bool, t)) -> (Int, IntSet)
 > maximalSDist = (\x -> bfsDepth 0 x x) . Set.filter (fst . dat)
-> bfsDepth :: Int -> Set (Node a) -> Set (Node a) -> (Int, Set (Node a))
+> bfsDepth :: Int -> Set (Node a) -> Set (Node a) -> (Int, IntSet)
 > bfsDepth d seen open
->     | next `Set.isSubsetOf` seen = (d, seen)
+>     | next `Set.isSubsetOf` seen
+>         = (d, IS.fromDistinctAscList . map nid $ Set.toAscList seen)
 >     | otherwise = d `seq` bfsDepth (d+1)
 >                   (Set.union next seen) (Set.difference next seen)
 >     where next = Set.unions $ Set.map neighbours open
 
-> pip :: Set (Node (Bool, Bool)) -> Int -> [[Cell]] -> Int
-> pip loop d (row:rs) = pip loop (pipRow loop d False row) rs
-> pip loop d _ = d
-> pipRow :: Set (Node (Bool, Bool)) -> Int -> Bool -> [Cell] -> Int
+> pip :: IntSet -> [[Cell]] -> Int
+> pip loop = sum . map (pipRow loop 0 False)
+> pipRow :: IntSet -> Int -> Bool -> [Cell] -> Int
 > pipRow loop d inside (x:xs)
 >     = case x of
 >         Nothing -> pipRow loop d' inside xs
->         Just n  -> if n `Set.member` loop
+>         Just n  -> if nid n `IS.member` loop
 >                    then pipRow loop d (inside /= snd (dat n)) xs
 >                    else pipRow loop d' inside xs
 >     where d' = d `seq` if inside then d+1 else d

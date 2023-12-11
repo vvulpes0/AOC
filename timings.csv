@@ -133,3 +133,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,9,2,Haskell,Mirage Maintenance,1129,
 2023,10,X,Haskell,Pipe Maze,6649,85
 2023,10,2,Haskell,Pipe Maze,601,
+2023,11,X,Haskell,Cosmic Expansion,9723824,22
+2023,11,2,Haskell,Cosmic Expansion,731244261352,

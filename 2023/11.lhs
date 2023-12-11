@@ -1,30 +1,26 @@
-> import Data.List (transpose, scanl')
+> module Main (main) where
+> import Data.Bool (bool)
+> import Data.List (scanl', tails, transpose)
 
 > main = do
->   ls <- lines <$> getContents
->   putStr "A: " >> print (dists 2 ls)
->   putStr "B: " >> print (dists 1000000 ls)
+>   f <- dists . lines <$> getContents
+>   putStr "A: " >> print (f 2)
+>   putStr "B: " >> print (f 1000000)
 
-> dists :: Int -> [String] -> Int
-> dists w ls = sum . map (uncurry manhattan) . pairs
->              . uncurry (galaxies ls) $ weight w ls
+> dists :: [String] -> Int -> Int
+> dists ls = sum . map (uncurry manhattan) . pairs
+>            . uncurry (galaxies ls) . weight ls
 
 > manhattan :: Num a => (a,a) -> (a,a) -> a
 > manhattan (a,b) (c,d) = abs (c-a) + abs (d-b)
 
 > pairs :: [a] -> [(a,a)]
-> pairs (x:xs) = map ((,) x) xs ++ pairs xs
-> pairs _ = []
+> pairs xs = concat $ zipWith (map . (,)) xs (drop 1 $ tails xs)
 
-> weight :: Int -> [String] -> ([Int],[Int])
-> weight r xs = (rows, cols)
->     where rows = map f xs
->           cols = map f (transpose xs)
->           f line = if all (== '.') line then r else 1
+> weight :: [String] -> Int -> ([Int],[Int])
+> weight xs r = (f xs, f $ transpose xs)
+>     where f = scanl' (+) 0 . map (bool 1 r . all (== '.'))
 
 > galaxies :: [String] -> [Int] -> [Int] -> [(Int,Int)]
-> galaxies xs rows cols
->     = concat . zipWith f (scanl' (+) 0 rows) $ map g xs
->     where f i row = map ((,) i) row
->           g s = map fst . filter ((== '#') . snd)
->                 $ zip (scanl' (+) 0 cols) s
+> galaxies xs rows cols = concat . zipWith (map . (,)) rows $ map g xs
+>     where g = map fst . filter ((== '#') . snd) . zip cols

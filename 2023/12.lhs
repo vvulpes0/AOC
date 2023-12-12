@@ -7,34 +7,35 @@
 > main :: IO ()
 > main = do
 >   input <- map parseLine . lines <$> getContents
->   putStr "A: " >> print (sum $ map (uncurry arrangements) input)
->   putStr "B: " >> print (sum $ map examine input)
-
-> splitOn :: Eq a => a -> [a] -> [[a]]
-> splitOn _ [] = []
-> splitOn x xs = uncurry (:) ((splitOn x . drop 1) <$> break (== x) xs)
+>   let (a,b) = unzip $ map (uncurry examine) input
+>   putStr "A: " >> print (sum a)
+>   putStr "B: " >> print (sum b)
 
 > parseLine :: String -> (String, [Int])
-> parseLine = fmap (map read . splitOn ',' . drop 1) . break (== ' ')
+> parseLine = fmap (read . ('[':) . (++"]")) . break (== ' ')
 
-> examine :: (String, [Int]) -> Int
-> examine = uncurry arrangements . expand
->     where expand (s, ns) = ( s ++ '?':s ++ '?':s ++ '?':s ++ '?':s
->                            , ns ++ ns ++ ns ++ ns ++ ns
->                            )
+> examine :: String -> [Int] -> (Int, Int)
+> examine s ns = arrangements (length s) (length ns)
+>                (s ++ '?':s ++ '?':s ++ '?':s ++ '?':s)
+>                (ns ++ ns ++ ns ++ ns ++ ns)
 
-> arrangements :: String -> [Int] -> Int
-> arrangements s ns = m IM.! i s ns
->     where f t  [] = if any (== '#') t then 0 else 1
->           f "" _  = 0
->           f t@(x:xs) (n:nn)
->               = bool 0 (m IM.! i (dropWhile (== '.') xs) (n:nn))
->                     (x `elem` ".?")
->                 + bool 0 (m IM.! i (drop n xs) nn) (has n t)
+> arrangements :: Int -> Int -> String -> [Int] -> (Int, Int)
+> arrangements ols oln s ns
+>     = let big  = m IM.! i 0 0
+>           smol = m IM.! i (ls - ols) (ln - oln - 1)
+>       in smol `seq` big `seq` (smol, big)
+>     where f _ _ t  [] = if any (== '#') t then 0 else 1
+>           f _ _ "" _  = 0
+>           f a b t@(x:_) (n:_)
+>               = bool 0 (m IM.! i a b) (x `elem` ".?")
+>                 + bool 0 (m IM.! i (min ls (a+n)) (b+1)) (has n t)
+>           ls = length s
 >           ln = length ns + 1
->           i x y = length x * ln + length y
+>           i x y = x*ln + y
 >           m = IM.fromList
->               [(i x y, f x y) | x <- tails s, y <- tails ns]
+>               [ (i a b, f (a+1) b x y)
+>               | (a, x) <- zip [0..] $ tails s
+>               , (b, y) <- zip [0..] $ tails ns]
 
 > has :: Int -> String -> Bool
 > has n [] = n == 0

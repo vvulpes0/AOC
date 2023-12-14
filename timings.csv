@@ -139,3 +139,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,12,2,Haskell,Hot Springs,280382734828319,
 2023,13,X,Haskell,Point of Incidence,29213,22
 2023,13,2,Haskell,Point of Incidence,37453,
+2023,14,X,Haskell,Parabolic Reflector Dish,109385,740
+2023,14,2,Haskell,Parabolic Reflector Dish,93102,

@@ -38,4 +38,4 @@
 
 > power :: (Int, Seq (String,Int)) -> Int
 > power (box, ps)
->     = sum $ Seq.mapWithIndex (\a b -> (a+1)*b*(box+1)) (snd <$> ps)
+>     = sum $ Seq.mapWithIndex (\a b -> (a+1) * snd b * (box+1)) ps

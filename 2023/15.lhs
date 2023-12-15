@@ -1,8 +1,11 @@
 > module Main (main) where
 > import Data.Bits ((.&.))
+> import Data.Foldable (toList)
 > import Data.IntMap (IntMap)
 > import Data.List (foldl')
+> import Data.Sequence (Seq, ViewL(..), (<|))
 > import qualified Data.IntMap.Strict as IM
+> import qualified Data.Sequence as Seq
 
 > main = do
 >   steps <- splitOn ',' . concat . lines <$> getContents
@@ -19,19 +22,20 @@
 > hash :: String -> Int
 > hash = foldl' (\b a -> (17*(b + fromEnum a) .&. 255)) 0
 
-> act :: IntMap [(String,Int)] -> String -> IntMap [(String,Int)]
+> act :: IntMap (Seq (String,Int)) -> String -> IntMap (Seq (String,Int))
 > act m s
->     | op == '=' = IM.insertWith insert (hash label) [(label,value)] m
->     | otherwise = IM.insertWith delete (hash label) [(label,value)] m
+>     | op == '=' = IM.insertWith insert (hash label) lv m
+>     | otherwise = IM.insertWith delete (hash label) lv m
 >     where (label,(op:v)) = break (`elem` "-=") s
 >           value = read v
->           delete _ = filter ((/= label) . fst)
+>           lv = pure (label, value)
+>           delete _ = Seq.filter ((/= label) . fst)
 >           insert _ xs
->               = let (pre,post) = break ((== label) . fst) xs
->                 in case post of
->                      (_:ys) -> pre ++ (label,value) : ys
->                      _      -> (label,value) : pre
+>               = let (pre,post) = Seq.breakl ((== label) . fst) xs
+>                 in case Seq.viewl post of
+>                      (_ :< ys) -> pre <> ((label,value) <| ys)
+>                      _         -> (label,value) <| pre
 
-> power :: (Int, [(String,Int)]) -> Int
-> power (box, ps) = sum . map (*(box+1))
->                   $ zipWith (*) (reverse $ map snd ps) [1..]
+> power :: (Int, Seq (String,Int)) -> Int
+> power (box, ps) = sum $ zipWith (\a b -> a*b*(box+1)) [1..]
+>                   (toList . Seq.reverse $ snd <$> ps)

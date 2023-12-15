@@ -141,3 +141,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,13,2,Haskell,Point of Incidence,37453,
 2023,14,X,Haskell,Parabolic Reflector Dish,109385,740
 2023,14,2,Haskell,Parabolic Reflector Dish,93102,
+2023,15,X,Haskell,Lens Library,516070,20
+2023,15,2,Haskell,Lens Library,244981,

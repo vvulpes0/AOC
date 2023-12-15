@@ -3,7 +3,7 @@
 > import Data.Foldable (toList)
 > import Data.IntMap (IntMap)
 > import Data.List (foldl')
-> import Data.Sequence (Seq, ViewL(..), (<|))
+> import Data.Sequence (Seq, ViewL(..), (<|), (|>))
 > import qualified Data.IntMap.Strict as IM
 > import qualified Data.Sequence as Seq
 
@@ -34,8 +34,8 @@
 >               = let (pre,post) = Seq.breakl ((== label) . fst) xs
 >                 in case Seq.viewl post of
 >                      (_ :< ys) -> pre <> ((label,value) <| ys)
->                      _         -> (label,value) <| pre
+>                      _         -> pre |> (label,value)
 
 > power :: (Int, Seq (String,Int)) -> Int
-> power (box, ps) = sum $ Seq.mapWithIndex (\a b -> (a+1)*b*(box+1))
->                   (Seq.reverse $ snd <$> ps)
+> power (box, ps)
+>     = sum $ Seq.mapWithIndex (\a b -> (a+1)*b*(box+1)) (snd <$> ps)

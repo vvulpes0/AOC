@@ -37,5 +37,5 @@
 >                      _         -> (label,value) <| pre
 
 > power :: (Int, Seq (String,Int)) -> Int
-> power (box, ps) = sum $ zipWith (\a b -> a*b*(box+1)) [1..]
->                   (toList . Seq.reverse $ snd <$> ps)
+> power (box, ps) = sum $ Seq.mapWithIndex (\a b -> (a+1)*b*(box+1))
+>                   (Seq.reverse $ snd <$> ps)

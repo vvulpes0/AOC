@@ -62,10 +62,3 @@
 >     where o = f x
 >           r = parmap f xs
 > parmap _ _ = []
-
-> chunks :: Int -> [a] -> [[a]]
-> chunks _ [] = []
-> chunks n xs = f . fmap (chunks n) $ splitAt n xs
->     where f (x, xs) = force x `seq` x : xs
->           force [] = ()
->           force (x:xs) = x `seq` force xs

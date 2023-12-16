@@ -74,7 +74,7 @@
 > graph source
 >     = let z = down . Zip [] Nothing $ ggraph 0 z source
 >       in case concatMap f . concat . flatten $ fmap flatten z of
->            xs@(x:_) -> (x, Set.fromList xs)
+>            xs@(x:_) -> (x, Set.fromDistinctAscList xs)
 >            _ -> error "no nodes"
 >     where f (a,b,c,d) = [a,b,c,d]
 > ggraph :: Int -> Grid Cell -> Grid Char -> [Zipper Cell]

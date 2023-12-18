@@ -8,9 +8,9 @@
 >   putStr "B: " >> print (partB plan)
 
 > partA, partB :: [(Char,Int,String)] -> Int
-> partA p = area $ dig (0,0) plan
+> partA p = uncurry area $ dig (0,0) plan
 >     where plan = map (\(a,b,_) -> (a,b)) p
-> partB p = area $ dig (0,0) plan
+> partB p = uncurry area $ dig (0,0) plan
 >     where plan = map (\(_,_,c) -> fixup c) p
 
 > fixup :: String -> (Char, Int)
@@ -27,24 +27,21 @@
 >     where f [[c],n,s] = (c, read n, take 6 . drop 2 $ s)
 >           f _ = error "bad input"
 
-> dig :: Pos -> [(Char,Int)] -> [Pos]
-> dig _ [] = []
+> dig :: Pos -> [(Char,Int)] -> (Int, [Pos])
+> dig _ [] = (0, [])
 > dig (x,y) ((c,i):xs)
->     | c == 'R' = let x' = x + i in (x,y) : dig (x',y) xs
->     | c == 'U' = let y' = y - i in (x,y) : dig (x,y') xs
->     | c == 'L' = let x' = x - i in (x,y) : dig (x',y) xs
->     | c == 'D' = let y' = y + i in (x,y) : dig (x,y') xs
+>     | c == 'R' = f (x+i, y)
+>     | c == 'U' = f (x  , y-i)
+>     | c == 'L' = f (x-i, y)
+>     | c == 'D' = f (x  , y+i)
 >     | otherwise = error "bad direction"
+>     where f (a,b) = let (p,out) = dig (a,b) xs in (p+i, (a,b):out)
 
 This combines the Shoelace Formula and Pick's Theorem
 
-> area :: [Pos] -> Int
-> area ps = shoelace + (perimeter ps `div` 2) + 1
+> area :: Int -> [Pos] -> Int
+> area boundary ps = shoelace + (boundary `div` 2) + 1
 >     where f _ [a,b,c] = snd b * (fst a - fst c)
 >           f _ _ = error "impossible nontriad"
 >           shoelace = flip div 2 . abs . sum . zipWith f ps
 >                      . map (take 3) . iterate (drop 1) $ cycle ps
->           perimeter (x:y:xs) = abs (fst x-fst y) + abs (snd x-snd y)
->                                + perimeter (y:xs)
->           perimeter (y:[]) = fst y + snd y
->           perimeter _ = 0

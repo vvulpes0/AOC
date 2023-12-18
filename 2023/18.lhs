@@ -1,5 +1,7 @@
-> import Data.List (partition)
+> import Data.List (partition,sort)
+> import Data.List.NonEmpty (groupWith)
 > import Data.Set (Set)
+> import qualified Data.List.NonEmpty as NE
 > import qualified Data.Set as Set
 
 > type Pos = (Int, Int)
@@ -69,19 +71,33 @@
 >                     <$> dig minY (max maxY y') (x,y') xs
 >     | otherwise = error "bad direction"
 
-> size :: Int -> Int -> [Line] -> Int
-> size minY maxY ls = sum (map f [minY..maxY])
->     where (vs,hs) = partition isVertical ls
->           f  = sizeR (Set.fromList vs) (Set.fromList hs)
+> enlist :: [Line] -> [(Int, [Range])]
+> enlist xs = map (\h -> (pos $ NE.head h, map range $ NE.toList h))
+>             $ groupWith pos xs
 
-> sizeR :: Set Line -> Set Line -> Int -> Int
+
+> size :: Int -> Int -> [Line] -> Int
+> size minY maxY ls = sum . go $ enlist hs
+>     where (vs,hs) = sort <$> partition isVertical ls
+>           sv = Set.fromList vs
+>           go ((x,h1):(x',h2):xs)
+>               | sz == 1 = out : go ((x',h2):xs)
+>               | otherwise = sizeR sv (Set.fromList h1) x
+>                             + (sz-1)*sizeR sv Set.empty (x+1)
+>                             : go ((x',h2):xs)
+>               where sz = x' - x
+>                     out = sz*sizeR sv (Set.fromList h1) x
+>           go [(y,h1)] = [sizeR sv (Set.fromList h1) y]
+>           go _ = []
+
+> sizeR :: Set Line -> Set Range -> Int -> Int
 > sizeR vs hs y
 >     = sum . map snd .
 >       merge (map expand hereH) . go . Set.toAscList
 >       $ Set.filter (\v -> ray y v && ray (y-1) v) vs
 >     where go (a:b:xs) = (pos a, pos b - pos a + 1) : go xs
 >           go _ = []
->           hereH = Set.toAscList $ Set.filter (ray y) hs
+>           hereH = Set.toAscList hs
 >           merge xs [] = xs
 >           merge [] zs = zs
 >           merge ((x,lx):xs) ((z,lz):zs)
@@ -92,7 +108,7 @@
 >                     addPre = if snd pre > 0 then (pre:) else id
 >                     addInt = if snd int > 0 then (int:) else id
 >                     add = addPre . addInt
->           expand x = let (a,b) = range x in (a-1,b+2)
+>           expand (a,b) = (a-1,b+2)
 
 
 > intersect :: Range -> Range -> (Range, Range, Range)

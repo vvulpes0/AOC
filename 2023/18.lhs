@@ -36,7 +36,6 @@ This combines the Shoelace Formula and Pick's Theorem
 
 > area :: Int -> [Pos] -> Int
 > area boundary ps = shoelace + (boundary `div` 2) + 1
->     where f _ [a,b,c] = snd b * (fst a - fst c)
->           f _ _ = error "impossible nontriad"
->           shoelace = flip div 2 . abs . sum . zipWith f ps
->                      . map (take 3) . iterate (drop 1) $ cycle ps
+>     where f _ (a,b,c) = snd b * (fst a - fst c)
+>           triads = let c = cycle ps in zip3 c (drop 1 c) (drop 2 c)
+>           shoelace = flip div 2 . abs . sum $ zipWith f ps triads

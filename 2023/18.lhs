@@ -1,8 +1,6 @@
 > import Data.List (partition,sort)
 > import Data.List.NonEmpty (groupWith)
-> import Data.Set (Set)
 > import qualified Data.List.NonEmpty as NE
-> import qualified Data.Set as Set
 
 > type Pos = (Int, Int)
 
@@ -79,25 +77,22 @@
 > size :: Int -> Int -> [Line] -> Int
 > size minY maxY ls = sum . go $ enlist hs
 >     where (vs,hs) = sort <$> partition isVertical ls
->           sv = Set.fromList vs
+>           sv = sort vs
 >           go ((x,h1):(x',h2):xs)
->               | sz == 1 = out : go ((x',h2):xs)
->               | otherwise = sizeR sv (Set.fromList h1) x
->                             + (sz-1)*sizeR sv Set.empty (x+1)
+>               | sz == 1 = sz*sizeR sv h1 x : go ((x',h2):xs)
+>               | otherwise = sizeR sv h1 x
+>                             + (sz-1)*sizeR sv [] (x+1)
 >                             : go ((x',h2):xs)
 >               where sz = x' - x
->                     out = sz*sizeR sv (Set.fromList h1) x
->           go [(y,h1)] = [sizeR sv (Set.fromList h1) y]
+>           go [(y,h1)] = [sizeR sv h1 y]
 >           go _ = []
 
-> sizeR :: Set Line -> Set Range -> Int -> Int
+> sizeR :: [Line] -> [Range] -> Int -> Int
 > sizeR vs hs y
->     = sum . map snd .
->       merge (map expand hereH) . go . Set.toAscList
->       $ Set.filter (\v -> ray y v && ray (y-1) v) vs
+>     = sum . map snd . merge (map expand hs) . go
+>       $ filter (\v -> ray y v && ray (y-1) v) vs
 >     where go (a:b:xs) = (pos a, pos b - pos a + 1) : go xs
 >           go _ = []
->           hereH = Set.toAscList hs
 >           merge xs [] = xs
 >           merge [] zs = zs
 >           merge ((x,lx):xs) ((z,lz):zs)

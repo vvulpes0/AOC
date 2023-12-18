@@ -1,19 +1,5 @@
-> import Data.List (partition,sort)
-> import Data.List.NonEmpty (groupWith)
-> import qualified Data.List.NonEmpty as NE
-
+> module Main (main) where
 > type Pos = (Int, Int)
-
-> type Range = (Int, Int) -- Start:Len
-> data Line = Horizontal {pos :: Int, range::Range}
->           | Vertical {pos :: Int, range :: Range}
->             deriving (Eq, Ord, Read, Show)
-> isVertical (Vertical _ _) = True
-> isVertical _ = False
-> len :: Line -> Int
-> len = snd . range
-> ray r (Vertical _ (s, x)) = r >= s && r < s+x
-> ray r (Horizontal y _) = r == y
 
 > main :: IO ()
 > main = do
@@ -22,28 +8,17 @@
 >   putStr "B: " >> print (partB plan)
 
 > partA, partB :: [(Char,Int,String)] -> Int
-> partA p = size mins maxes dug
+> partA p = area $ dig (0,0) plan
 >     where plan = map (\(a,b,_) -> (a,b)) p
->           ((mins,maxes),dug) = dig 0 0 (0,0) plan
-> partB p = size mins maxes dug
+> partB p = area $ dig (0,0) plan
 >     where plan = map (\(_,_,c) -> fixup c) p
->           ((mins,maxes),dug) = dig 0 0 (0,0) plan
 
 > fixup :: String -> (Char, Int)
 > fixup [a,b,c,d,e,f]
 >     = ( "RDLU" !! (fromEnum f - fromEnum '0')
 >       , read ("0x" ++ [a,b,c,d,e])
 >       )
-
-> printGrid :: Pos -> Pos -> [Pos] -> IO ()
-> printGrid (minX,minY) (maxX,maxY) ps
->     = putStr $ unlines $
->       ["P1",unwords[show (maxX-minX+1),show (maxY-minY+1)]] ++
->       [ [ if (x,y) `elem` ps then '1' else '0'
->         | x <- [minX..maxX]
->         ]
->       | y <- [minY..maxY]
->       ]
+> fixup _ = error "bad colour"
 
 > parse :: String -> [(Char,Int,String)]
 > parse = map parseRow . lines
@@ -52,66 +27,24 @@
 >     where f [[c],n,s] = (c, read n, take 6 . drop 2 $ s)
 >           f _ = error "bad input"
 
-> dig :: Int -> Int -> Pos -> [(Char,Int)] -> ((Int,Int), [Line])
-> dig minY maxY _ [] = ((minY,maxY), [])
-> dig minY maxY (x,y) ((c,i):xs)
->     | c == 'R' = let x' = x + i
->                  in (Horizontal y (x+1, i-1) :)
->                     <$> dig minY maxY (x',y) xs
->     | c == 'U' = let y' = y - i
->                  in (Vertical x (y', i+1) :)
->                     <$> dig (min minY y') maxY (x,y') xs
->     | c == 'L' = let x' = x - i
->                  in (Horizontal y (x'+1, i-1) :)
->                     <$> dig minY maxY (x',y) xs
->     | c == 'D' = let y' = y + i
->                  in (Vertical x (y, i+1) :)
->                     <$> dig minY (max maxY y') (x,y') xs
+> dig :: Pos -> [(Char,Int)] -> [Pos]
+> dig _ [] = []
+> dig (x,y) ((c,i):xs)
+>     | c == 'R' = let x' = x + i in (x,y) : dig (x',y) xs
+>     | c == 'U' = let y' = y - i in (x,y) : dig (x,y') xs
+>     | c == 'L' = let x' = x - i in (x,y) : dig (x',y) xs
+>     | c == 'D' = let y' = y + i in (x,y) : dig (x,y') xs
 >     | otherwise = error "bad direction"
 
-> enlist :: [Line] -> [(Int, [Range])]
-> enlist xs = map (\h -> (pos $ NE.head h, map range $ NE.toList h))
->             $ groupWith pos xs
+This combines the Shoelace Formula and Pick's Theorem
 
-
-> size :: Int -> Int -> [Line] -> Int
-> size minY maxY ls = sum . go $ enlist hs
->     where (vs,hs) = sort <$> partition isVertical ls
->           sv = sort vs
->           go ((x,h1):(x',h2):xs)
->               | sz == 1 = sz*sizeR sv h1 x : go ((x',h2):xs)
->               | otherwise = sizeR sv h1 x
->                             + (sz-1)*sizeR sv [] (x+1)
->                             : go ((x',h2):xs)
->               where sz = x' - x
->           go [(y,h1)] = [sizeR sv h1 y]
->           go _ = []
-
-> sizeR :: [Line] -> [Range] -> Int -> Int
-> sizeR vs hs y
->     = sum . map snd . merge (map expand hs) . go
->       $ filter (\v -> ray y v && ray (y-1) v) vs
->     where go (a:b:xs) = (pos a, pos b - pos a + 1) : go xs
->           go _ = []
->           merge xs [] = xs
->           merge [] zs = zs
->           merge ((x,lx):xs) ((z,lz):zs)
->               | x+lx > z+lz = add (merge (post:xs) zs)
->               | x+lx < z+lz = add (merge xs (post:zs))
->               | otherwise   = add (merge xs zs)
->               where (pre,int,post) = intersect (x,lx) (z,lz)
->                     addPre = if snd pre > 0 then (pre:) else id
->                     addInt = if snd int > 0 then (int:) else id
->                     add = addPre . addInt
->           expand (a,b) = (a-1,b+2)
-
-
-> intersect :: Range -> Range -> (Range, Range, Range)
-> intersect a b = ( (x, min lx (y-x))
->                 , (y, intend-y)
->                 , (pstart, pend-pstart))
->     where (x,lx) = min a b
->           (y,ly) = max a b
->           intend = min (y+ly) (x+lx)
->           pend   = max (x+lx) (y+ly)
->           pstart = max y intend
+> area :: [Pos] -> Int
+> area ps = shoelace + (perimeter ps `div` 2) + 1
+>     where f _ [a,b,c] = snd b * (fst a - fst c)
+>           f _ _ = error "impossible nontriad"
+>           shoelace = flip div 2 . abs . sum . zipWith f ps
+>                      . map (take 3) . iterate (drop 1) $ cycle ps
+>           perimeter (x:y:xs) = abs (fst x-fst y) + abs (snd x-snd y)
+>                                + perimeter (y:xs)
+>           perimeter (y:[]) = fst y + snd y
+>           perimeter _ = 0

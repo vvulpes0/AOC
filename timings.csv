@@ -153,3 +153,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,19,2,Haskell,Aplenty,113550238315130,
 2023,20,X,Haskell,Pulse Propagation,670984704,85
 2023,20,2,Haskell,Pulse Propagation,262775362119547,
+2023,21,X,Haskell,Step Counter,3699,99
+2023,21,2,Haskell,Step Counter,613391294577878,

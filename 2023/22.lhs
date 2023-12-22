@@ -1,6 +1,5 @@
 > import Data.List (sortOn)
 > import Data.Map (Map, (!))
-> import Data.Set (Set)
 > import qualified Data.Map as Map
 > import qualified Data.Set as Set
 
@@ -29,7 +28,6 @@
 >     where hs = height hs supps
 >           f k a = let x = hs ! k - (zc $ snd k) + (zc $ fst k) - 1
 >                   in filter ((== x) . (hs !)) a
->           h k = zc (snd k) - zc (fst k) + 1
 
 > height :: Map Brick Int -> Map Brick [Brick] -> Map Brick Int
 > height hs supps = Map.mapWithKey f supps

@@ -155,3 +155,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,20,2,Haskell,Pulse Propagation,262775362119547,
 2023,21,X,Haskell,Step Counter,3699,99
 2023,21,2,Haskell,Step Counter,613391294577878,
+2023,22,X,Haskell,Sand Slabs,443,260
+2023,22,2,Haskell,Sand Slabs,69915,

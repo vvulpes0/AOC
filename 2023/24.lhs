@@ -59,7 +59,8 @@
 A solver for a set of linear equations:
 
 > rref :: (Eq a, Fractional a) => [[a]] -> [[a]]
-> rref xs = foldr rref' xs . reverse $ zipWith const [0..] xs
+> rref xs = foldr rref' xs . reverse . zipWith const [0..]
+>           . concat $ take 1 xs
 
 > rref' :: (Eq a, Fractional a) => Int -> [[a]] -> [[a]]
 > rref' n xs

@@ -159,5 +159,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,22,2,Haskell,Sand Slabs,69915,
 2023,23,X,Haskell,A Long Walk,2042,3930
 2023,23,2,Haskell,A Long Walk,6466,
-2023,24,1,Haskell,Never Tell Me The Odds,13754,32
-2023,24,2,Z3,Never Tell Me The Odds,711031616315001,60
+2023,24,X,Haskell,Never Tell Me The Odds,13754,34
+2023,24,2,Haskell,Never Tell Me The Odds,711031616315001,

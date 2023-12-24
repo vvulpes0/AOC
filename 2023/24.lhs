@@ -35,7 +35,7 @@
 > pairs (x:xs) = map ((,)x) xs ++ pairs xs
 
 > intersectXY :: ((Int,Int),(Int,Int)) -> ((Int,Int),(Int,Int))
->             -> Maybe (Double,Double)
+>             -> Maybe (Rational,Rational)
 > intersectXY ((x1,y1),(vx1,vy1)) ((x2,y2),(vx2,vy2))
 >     | denom == 0     = Nothing
 >     | t < 0 || u < 0 = Nothing

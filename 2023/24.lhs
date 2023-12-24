@@ -64,9 +64,8 @@ A solver for a set of linear equations:
 
 > rref' :: (Eq a, Fractional a) => Int -> [[a]] -> [[a]]
 > rref' n xs
->     = case drop n xs of
->         [] -> xs
->         _  -> splatter n . divrow n $ roll n n xs
+>     | null $ drop n xs = xs
+>     | otherwise = splatter n . divrow n $ roll n n xs
 
 > roll :: (Eq a, Num a) => Int -> Int -> [[a]] -> [[a]]
 > roll _ _ [] = []

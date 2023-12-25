@@ -1,7 +1,6 @@
 > import Data.List (partition)
 > import Data.Map (Map)
 > import Data.Set (Set)
-> import Debug.Trace
 > import qualified Data.Map as Map
 > import qualified Data.Set as Set
 
@@ -18,8 +17,8 @@
 > graph = Map.fromListWith (++) . concatMap f . lines
 >     where f s = let (pre,post) = drop 1 <$> break (== ':') s
 >                 in concatMap
->                    (\a -> [( Set.singleton a,[(Set.singleton pre, 1)])
->                            ,(Set.singleton pre,[(Set.singleton a, 1)])
+>                    (\a -> [ (Set.singleton a,[(Set.singleton pre, 1)])
+>                           , (Set.singleton pre,[(Set.singleton a, 1)])
 >                           ]) $ words post
 
 > minCut :: Graph -> (Graph,Int)
@@ -29,17 +28,18 @@
 >     | w < q           = (g'', w)
 >     | otherwise       = (h, q)
 >     where [t,s] = if Map.size g == 2 then Map.keys g
->                   else minCutPhase g (fst $ Map.findMin g) []
+>                   else minCutPhase g (fst $ Map.findMin g) [] 1
 >           g' = merge g [t,s]
 >           g'' = merge g (filter (/= t) $ Map.keys g)
 >           w = sum $ fmap snd (g Map.! t)
 >           (h,q) = minCut g'
 
-> minCutPhase :: Graph -> Set String -> [Set String] -> [Set String]
-> minCutPhase g seen out
->     | seen == Set.unions (Map.keys g) = out
+> minCutPhase :: Graph -> Set String -> [Set String] -> Int
+>             -> [Set String]
+> minCutPhase g seen out d
+>     | d == Map.size g = out
 >     | otherwise = minCutPhase g (maxi `Set.union` seen)
->                   (maxi : take 1 out)
+>                   (maxi : take 1 out) $! d+1
 >     where (maxi,_) = foldr1 (uncurry f) . map weight
 >                      . filter ((`Set.disjoint` seen) . fst)
 >                      $ Map.toAscList g

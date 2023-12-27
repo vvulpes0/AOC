@@ -12,7 +12,8 @@
 > partA :: Graph -> Int
 > partA g = prod $ size (iterate f g !! 3)
 >     where ((s,e), m) = boundaries g
->           f gr = deleteLongest gr (iterate (spring gr s e) m !! 6)
+>           m' = iterate (spring g s e) m !! 6
+>           f gr = deleteLongest gr m'
 >           size gr = Map.size . snd
 >                     $ bfs gr Map.empty (Set.take 1 $ keysSet gr) 0
 >           prod x = x * (Map.size g - x)
@@ -49,7 +50,6 @@
 >               | otherwise = m!k
 >           extra = (4*) . Set.size
 >                   . Set.filter (\x -> x == start || x == end)
-
 
 > furthest :: Graph -> Set String -> Set String -> String
 > furthest g closed open

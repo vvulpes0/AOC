@@ -15,6 +15,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,7,2,Lua,Some Assembly Required,14710,
 2015,8,X,Synacor,Matchsticks,1342,8
 2015,8,2,Synacor,Matchsticks,2074,
+2016,1,X,APL,No Time for a Taxicab,146,371
+2016,1,2,APL,No Time for a Taxicab,131,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

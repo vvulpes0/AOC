@@ -19,6 +19,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,1,2,APL,No Time for a Taxicab,131,
 2016,2,X,APL,Bathroom Security,38961,400
 2016,2,2,APL,Bathroom Security,46C92,
+2016,3,X,APL,Squares With Three Sides,869,371
+2016,3,2,APL,Squares With Three Sides,1544,
+2016,4,X,APL,Security Through Obscurity,185371,433
+2016,4,2,APL,Security Through Obscurity,984,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

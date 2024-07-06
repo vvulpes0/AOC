@@ -55,6 +55,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,19,2,APL,An Elephant Named Joseph,1417887,
 2016,20,X,APL,Firewall Rules,17348574,404
 2016,20,2,APL,Firewall Rules,104,
+2016,21,X,APL,Scrambled Letters and Hash,cbeghdaf,401
+2016,21,2,APL,Scrambled Letters and Hash,bacdefgh,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

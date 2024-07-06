@@ -6,3 +6,4 @@ Checksum ← ∊⍕¨∘(Pass⍣((2|≢)⊣))
 PartA ← Checksum 272 Fill X
 PartB ← Checksum 35651584 Fill X
 ⎕ ← PartA PartB
+)OFF

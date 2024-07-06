@@ -1,5 +1,6 @@
-#include <string.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 static int const s[] = {
 	7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,  7, 12, 17, 22,
@@ -26,67 +27,62 @@ static uint_fast32_t const K[] = {
 	0xf7537e82U, 0xbd3af235U, 0x2ad7d2bbU, 0xeb86d391U,
 };
 
-static uint_fast32_t const a0 = 0x67452301U;
-static uint_fast32_t const b0 = 0xefcdab89U;
-static uint_fast32_t const c0 = 0x98badcfeU;
-static uint_fast32_t const d0 = 0x10325476U;
-
 /** md5 **
  * msg : a null-terminated string message
  * out : a caller-owned 32-byte char array
 */
 void md5(char const * restrict msg, char * restrict out) {
-	char buf[64];
-	uint_fast32_t blocks[16];
-	int len=strnlen(msg,56);
-	int i;
-	int j;
-	uint_fast32_t A = a0;
-	uint_fast32_t B = b0;
-	uint_fast32_t C = c0;
-	uint_fast32_t D = d0;
-	uint_fast32_t F;
-	int g;
+	unsigned long long len=strlen(msg);
+	int const nchunks = (len+8+64)/64; /* +8B reserved for length */
+	uint_fast32_t *blocks = malloc(16*nchunks*sizeof(*blocks));
+	uint_fast32_t a0 = 0x67452301U;
+	uint_fast32_t b0 = 0xefcdab89U;
+	uint_fast32_t c0 = 0x98badcfeU;
+	uint_fast32_t d0 = 0x10325476U;
+	uint_fast32_t A,B,C,D,F;
+	int i,j,g;
 	/* Prepare blocks */
-	strncpy(buf, msg, sizeof(buf)-8);
-	buf[len] = 0x80;
-	for (i=len+1; i<sizeof(buf); ++i) {
-		buf[i] = 0;
+	F = g = j = 0;
+	for (i=0; i<64*nchunks; ++i) {
+		F |= ((i>len)?0:(i==len)?0x80:msg[i])<<g;
+		g = (g+8)&0x1F;
+		if (!g) { blocks[j++] = F; F = 0; }
 	}
+	j-=2;
 	len *= 8;
 	for (i=0; i<8; ++i) {
-		buf[56+i] = len%256;
+		blocks[j] |= (len%256)<<g;
+		g = (g+8)&0x1F;
+		if (!g) { j++; }
 		len /= 256;
 	}
-	/* manually emblock in case of big-endian systems */
-	for (i=0; i<sizeof(blocks)/sizeof(*blocks); ++i) {
-		blocks[i]=0;
-		for (j=4; j>0; --j) {
-			blocks[i]*=256;
-			blocks[i]+=(unsigned char)(buf[4*i+j-1]);
+	/* blocks emblocked, now process */
+	for (j = 0; j < nchunks; ++j) {
+		A = a0; B = b0; C = c0; D = d0;
+		for (i = 0; i < 64; ++i) {
+			if (i < 16) {
+				F = (B&C) | (D&~B);
+				g = i;
+			} else if (i < 32) {
+				F = (D&B) | (C&~D);
+				g = (5*i + 1)&0xF;
+			} else if (i < 48) {
+				F = B^C^D;
+				g = (3*i + 5)&0xF;
+			} else {
+				F = C^(B|~D);
+				g = (7*i)&0xF;
+			}
+			F = F + A + K[i] + blocks[16*j+g];
+			A = D;
+			D = C;
+			C = B;
+			B = B + ((F<<s[i])|((F&0xffffffffU)>>(32-s[i])));
 		}
+		a0+=A; b0+=B; c0+=C; d0+=D;
 	}
-	for (i = 0; i < 64; ++i) {
-		if (i < 16) {
-			F = (B&C) | (D&~B);
-			g = i;
-		} else if (i < 32) {
-			F = (D&B) | (C&~D);
-			g = (5*i + 1)&0xF;
-		} else if (i < 48) {
-			F = B^C^D;
-			g = (3*i + 5)&0xF;
-		} else {
-			F = C^(B|~D);
-			g = (7*i)&0xF;
-		}
-		F = F + A + K[i] + blocks[g];
-		A = D;
-		D = C;
-		C = B;
-		B = B + ((F<<s[i])|((F&0xffffffffU)>>(32-s[i])));
-	}
-	blocks[0]=A+a0; blocks[1]=B+b0; blocks[2]=C+c0; blocks[3]=D+d0;
+	blocks[0]=a0; blocks[1]=b0;
+	blocks[2]=c0; blocks[3]=d0;
 	for (i = 0; i < 4; ++i) {
 		for (j = 0; j < 4; ++j) {
 			F = blocks[i]&0xff;
@@ -97,4 +93,5 @@ void md5(char const * restrict msg, char * restrict out) {
 			blocks[i]>>=8;
 		}
 	}
+	free(blocks);
 }

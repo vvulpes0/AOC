@@ -35,3 +35,4 @@ Indices ← ⍬
 PartA ← ⊃⌽64 GenerateKeys (X 1)
 PartB ← ⊃⌽64 GenerateKeys (X 2017)
 ⎕ ← PartA PartB
+)OFF

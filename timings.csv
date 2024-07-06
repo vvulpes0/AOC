@@ -49,6 +49,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,16,2,APL,Dragon Checksum,10111100110110100,
 2016,17,X,APL,Two Steps Forward,DDRLRRUDDR,823
 2016,17,2,APL,Two Steps Forward,556,
+2016,18,X,APL,Like a Rogue,1956,21388
+2016,18,2,APL,Like a Rogue,19995121,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

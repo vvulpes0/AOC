@@ -45,6 +45,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,14,2,APL,One-Time Pad,22696,
 2016,15,X,APL,Timing is Everything,376777,392
 2016,15,2,APL,Timing is Everything,3903937,
+2016,16,X,APL,Dragon Checksum,11111000111110000,400
+2016,16,2,APL,Dragon Checksum,10111100110110100,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

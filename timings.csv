@@ -43,6 +43,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,13,2,APL,A Maze of Twisty Little Cubicles,138,
 2016,14,X,APL,One-Time Pad,23890,174060
 2016,14,2,APL,One-Time Pad,22696,
+2016,15,X,APL,Timing is Everything,376777,392
+2016,15,2,APL,Timing is Everything,3903937,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

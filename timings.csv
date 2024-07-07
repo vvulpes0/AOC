@@ -61,6 +61,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,22,2,APL,Grid Computing,249,
 2016,23,X,APL,Safe Cracking,14065,394
 2016,23,2,APL,Safe Cracking,479010625,
+2016,24,X,APL,Air Duct Spelunking,460,3915
+2016,24,2,APL,Air Duct Spelunking,668,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

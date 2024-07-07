@@ -8,7 +8,7 @@ Inc ← { _ dst ← ⍺ ⋄ ((+∘1)@(Reg dst)Advance) ⍵ }
 Jnz ← {
 	_ cond dsp ← ⍺
 	0≡cond Read⍵: Advance ⍵
-	(Read dsp)(+@(5+⎕IO)) ⍵
+	(dsp Read ⍵)(+@(5+⎕IO)) ⍵
 }
 Execute ← {
 	instrs a b c d pc ← ⍵

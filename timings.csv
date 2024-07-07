@@ -57,6 +57,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2016,20,2,APL,Firewall Rules,104,
 2016,21,X,APL,Scrambled Letters and Hash,cbeghdaf,401
 2016,21,2,APL,Scrambled Letters and Hash,bacdefgh,
+2016,22,X,APL,Grid Computing,941,2111
+2016,22,2,APL,Grid Computing,249,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

@@ -1,0 +1,72 @@
+/Times findfont
+12 scalefont
+setfont
+/x (hepxcrrq) [ exch {(a) 0 get sub}forall ] def
+/mkstr {
+    dup length string exch 0 exch
+    {(a) 0 get add 3 1 roll 2 copy 5 4 roll put 1 add}forall
+    string cvs
+} def
+/zeroPost { % x i zeroPost :: x(fixed) i
+    1 index length 1 sub % x i j
+    {
+	2 copy eq {pop exit}if
+	3 copy exch pop 0 put
+	1 sub
+    }loop
+} def
+/incFill { 1 add 3 1 roll zeroPost 3 2 roll } def
+/fix { % x fix :: x (fixed)
+    dup length 1 sub
+    {
+	2 copy get
+	dup (i) 0 get (a) 0 get sub eq {incFill}if
+	dup (l) 0 get (a) 0 get sub eq {incFill}if
+	dup (o) 0 get (a) 0 get sub eq {incFill}if
+	3 copy put pop
+	1 sub dup 0 lt {pop exit}if
+    }loop
+} def
+/inc { % x inc :: x (incremented)
+    dup length 1 sub
+    {
+	2 copy get 1 add
+	dup (i) 0 get (a) 0 get sub eq {incFill}if
+	dup (l) 0 get (a) 0 get sub eq {incFill}if
+	dup (o) 0 get (a) 0 get sub eq {incFill}if
+	dup (z) 0 get (a) 0 get sub gt
+	{pop 2 copy 0 put 1 sub}{3 copy put pop pop exit}ifelse
+    }loop
+} def
+/hasDoubleDouble { % x hasDoubleDouble :: bool
+    255 exch {}forall
+    0
+    {
+	1 index 255 eq {exch pop exit}if
+	2 index 255 eq {exch pop exch pop exit}if
+	3 copy pop eq
+	{1 add exch pop}if exch pop
+    }loop
+    1 gt
+} def
+/hasStraight3 { % x hasStraight3 :: bool
+    255 exch {}forall
+    {
+	2 copy 1 sub eq exch pop
+	3 copy pop 1 sub eq and
+	{{255 eq{exit}if}loop true exit}
+	{2 index 255 eq {pop pop pop false exit}if}
+	ifelse
+    }loop
+} def
+/nextPassword { % x nextPassword :: x (nexted)
+    {
+	inc dup dup hasDoubleDouble exch hasStraight3 and
+	{exit}if
+    }loop
+} def
+36 756 moveto
+x fix dup
+nextPassword mkstr show ( ) show
+nextPassword mkstr show
+showpage

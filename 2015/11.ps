@@ -6,7 +6,7 @@ setfont
     dup length string exch 0 exch
     {(a) 0 get add 3 1 roll 2 copy 5 4 roll put 1 add}forall
     string cvs
-} def
+} bind def
 /zeroPost { % x i zeroPost :: x(fixed) i
     1 index length 1 sub % x i j
     {
@@ -14,8 +14,8 @@ setfont
 	3 copy exch pop 0 put
 	1 sub
     }loop
-} def
-/incFill { 1 add 3 1 roll zeroPost 3 2 roll } def
+} bind def
+/incFill { 1 add 3 1 roll zeroPost 3 2 roll } bind def
 /fix { % x fix :: x (fixed)
     dup length 1 sub
     {
@@ -26,7 +26,7 @@ setfont
 	3 copy put pop
 	1 sub dup 0 lt {pop exit}if
     }loop
-} def
+} bind def
 /inc { % x inc :: x (incremented)
     dup length 1 sub
     {
@@ -37,7 +37,7 @@ setfont
 	dup (z) 0 get (a) 0 get sub gt
 	{pop 2 copy 0 put 1 sub}{3 copy put pop pop exit}ifelse
     }loop
-} def
+} bind def
 /hasDoubleDouble { % x hasDoubleDouble :: bool
     255 exch {}forall
     0
@@ -48,7 +48,7 @@ setfont
 	{1 add exch pop}if exch pop
     }loop
     1 gt
-} def
+} bind def
 /hasStraight3 { % x hasStraight3 :: bool
     255 exch {}forall
     {
@@ -58,13 +58,13 @@ setfont
 	{2 index 255 eq {pop pop pop false exit}if}
 	ifelse
     }loop
-} def
+} bind def
 /nextPassword { % x nextPassword :: x (nexted)
     {
 	inc dup dup hasDoubleDouble exch hasStraight3 and
 	{exit}if
     }loop
-} def
+} bind def
 36 756 moveto
 x fix dup
 nextPassword mkstr show ( ) show

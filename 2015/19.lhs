@@ -1,4 +1,3 @@
-> import Debug.Trace
 > import Data.Bifunctor (bimap,first)
 > import Data.Char (isUpper)
 > import Data.List (isPrefixOf)

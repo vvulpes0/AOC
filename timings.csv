@@ -27,6 +27,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,13,2,C++,Knights of the Dinner Table,601,
 2015,14,X,Emacs Lisp,Reindeer Olympics,2696,337
 2015,14,2,Emacs Lisp,Reindeer Olympics,1084,
+2015,15,X,AWK,Science for Hungry People,18965440,313
+2015,15,2,AWK,Science for Hungry People,15862900,
+2015,16,1,Sed,Aunt Sue,373,11
+2015,16,2,Sed,Aunt Sue,260,11
 2016,1,X,APL,No Time for a Taxicab,146,371
 2016,1,2,APL,No Time for a Taxicab,131,
 2016,2,X,APL,Bathroom Security,38961,400

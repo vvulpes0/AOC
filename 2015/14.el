@@ -28,13 +28,6 @@
       (cons (apply f (mapcar 'car xs))
             (apply 'mapcar* f (mapcar 'cdr xs)))))
 (defun points (deer score n)
-  (cond ((zerop n) score)
-        (t (letrec ((dists (mapcar (lambda (x) (dist x n)) deer))
-                    (m (apply 'max dists))
-                    (winners (mapcar
-                              (lambda (x) (if (= x m) 1 0)) dists)))
-             (points deer (mapcar* '+ score winners) (- n 1))))))
-(defun points (deer score n)
   (progn
     (while (> n 0)
       (letrec ((dists (mapcar (lambda (x) (dist x n)) deer))
@@ -48,4 +41,4 @@
 (setq part-b
       (apply 'max
              (points reindeer (mapcar (lambda (x) 0) reindeer) 2503)))
-(progn (princ part-a) (princ " ") (princ part-b) (princ "\n"))
+(mapcar 'princ (list part-a " " part-b "\n"))

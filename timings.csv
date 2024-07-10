@@ -25,6 +25,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,12,2,Forth,JSAbacusFramework.io,68466,48
 2015,13,X,C++,Knights of the Dinner Table,618,12
 2015,13,2,C++,Knights of the Dinner Table,601,
+2015,14,X,Emacs Lisp,Reindeer Olympics,2696,337
+2015,14,2,Emacs Lisp,Reindeer Olympics,1084,
 2016,1,X,APL,No Time for a Taxicab,146,371
 2016,1,2,APL,No Time for a Taxicab,131,
 2016,2,X,APL,Bathroom Security,38961,400

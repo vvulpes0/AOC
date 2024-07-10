@@ -35,6 +35,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,17,2,C,No Such Thing as Too Much,17,
 2015,18,X,Objective-C,Like a GIF For Your Yard,814,220
 2015,18,2,Objective-C,Like a GIF For Your Yard,924,
+2015,19,X,Haskell,Medicine for Rudolph,518,122
+2015,19,2,Haskell,Medicine for Rudolph,200,
 2016,1,X,APL,No Time for a Taxicab,146,371
 2016,1,2,APL,No Time for a Taxicab,131,
 2016,2,X,APL,Bathroom Security,38961,400

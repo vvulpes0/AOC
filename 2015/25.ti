@@ -1,0 +1,16 @@
+aoc25(r,c)
+Func
+Local b,c,e,m,r
+(r+c-2)*(r+c-1)/2+c-1→e
+20151125→r
+252533→b
+33554393→m
+While e>0
+  If mod(e,2)=1 Then
+    mod(r*b,m)→r
+  EndIf
+  floor(e/2)→e
+  mod(b*b,m)→b
+EndWhile
+Return r
+EndFunc

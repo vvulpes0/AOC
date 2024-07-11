@@ -37,6 +37,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,18,2,Objective-C,Like a GIF For Your Yard,924,
 2015,19,X,Haskell,Medicine for Rudolph,518,122
 2015,19,2,Haskell,Medicine for Rudolph,200,
+2015,20,X,GAP,Infinite Elves and Infinite Houses,831600,7523
+2015,20,2,GAP,Infinite Elves and Infinite Houses,884520,
 2016,1,X,APL,No Time for a Taxicab,146,371
 2016,1,2,APL,No Time for a Taxicab,131,
 2016,2,X,APL,Bathroom Security,38961,400

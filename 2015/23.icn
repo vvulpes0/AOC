@@ -1,0 +1,31 @@
+#!/usr/bin/env icon
+procedure main(args)
+    local lines
+    lines := []
+    while put(lines,read())
+    write(eval(lines,0), " ", eval(lines,1))
+end
+
+procedure eval(lines,a)
+    local instr,b,pc
+    pc := 1
+    b := 0
+    while instr := lines[pc] do {
+        if match("hlf",instr) then
+            if find("a",instr) then a := a/2 else b := b/2
+        if match("tpl",instr) then
+            if find("a",instr) then a := 3*a else b := 3*b
+        if match("inc",instr) then
+            if find("a",instr) then a := a+1 else b := b+1
+        if match("jmp",instr) then
+            instr ? {if tab(find("-"|"+")) then pc := pc+tab(0)-1}
+        if match("jie",instr) then
+            if (find("a",instr)&(a%2=0))|(find("b",instr)&(b%2)=0) then
+                instr ? {if tab(find("-"|"+")) then pc := pc+tab(0)-1}
+        if match("jio",instr) then{
+            if (find("a",instr)&a=1)|(find("b",instr)&b=1) then
+                instr ? {if tab(find("-"|"+")) then pc := pc+tab(0)-1}}
+        pc := pc + 1
+    }
+    return b
+end

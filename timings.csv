@@ -105,6 +105,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,3,2,Forth,Spiral Memory,369601,
 2017,4,X,APL,High-Entropy Passphrases,455,361
 2017,4,2,APL,High-Entropy Passphrases,186,
+2017,5,X,AWK,A Maze of Twisty Trampolines All Alike,394829,10849
+2017,5,2,AWK,A Maze of Twisty Trampolines All Alike,31150702,
+2017,6,X,APL,Memory Reallocation,5042,812
+2017,6,2,APL,Memory Reallocation,1086,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

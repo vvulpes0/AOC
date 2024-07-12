@@ -41,8 +41,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2015,20,2,GAP,Infinite Elves and Infinite Houses,884520,
 2015,21,X,Ruby,RPG Simulator 20XX,121,83
 2015,21,2,Ruby,RPG Simulator 20XX,201,
-2015,22,X,Wizard Simulator 20XX,900,175
-2015,22,2,Wizard Simulator 20XX,1216,
+2015,22,X,Swift,Wizard Simulator 20XX,900,175
+2015,22,2,Swift,Wizard Simulator 20XX,1216,
 2015,23,X,Icon,Opening the Turing Lock,184,200
 2015,23,2,Icon,Opening the Turing Lock,231,
 2015,24,X,Rexx,It Hangs in the Balance,11266889531,3770

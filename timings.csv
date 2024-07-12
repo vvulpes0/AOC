@@ -101,6 +101,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,1,2,APL,Inverse Captcha,1508,
 2017,2,1,Forth,Corruption Checksum,51833,13
 2017,2,2,Forth,Corruption Checksum,288,14
+2017,3,X,Forth,Spiral Memory,371,12
+2017,3,2,Forth,Spiral Memory,369601,
+2017,4,X,APL,High-Entropy Passphrases,455,361
+2017,4,2,APL,High-Entropy Passphrases,186,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

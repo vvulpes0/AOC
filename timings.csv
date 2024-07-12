@@ -113,6 +113,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,7,2,AWK,Recursive Circus,596,
 2017,8,X,AWK,I Heard You Like Registers,5849,15
 2017,8,2,AWK,I Heard You Like Registers,6702,
+2017,9,X,Forth,Stream Processing,7640,31
+2017,9,2,Forth,Stream Processing,4368,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

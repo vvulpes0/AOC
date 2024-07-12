@@ -111,6 +111,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,6,2,APL,Memory Reallocation,1086,
 2017,7,X,AWK,Recursive Circus,uownj,20
 2017,7,2,AWK,Recursive Circus,596,
+2017,8,X,AWK,I Heard You Like Registers,5849,15
+2017,8,2,AWK,I Heard You Like Registers,6702,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

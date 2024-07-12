@@ -117,6 +117,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,9,2,Forth,Stream Processing,4368,
 2017,10,X,C,Knot Hash,8536,6
 2017,10,2,C,Knot Hash,aff593797989d665349efe11bb4fd99b,
+2017,11,X,AWK,Hex Ed,794,40
+2017,11,2,AWK,Hex Ed,1524,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

@@ -119,6 +119,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,10,2,C,Knot Hash,aff593797989d665349efe11bb4fd99b,
 2017,11,X,AWK,Hex Ed,794,40
 2017,11,2,AWK,Hex Ed,1524,
+2017,12,X,AWK,Digital Plumber,288,25
+2017,12,2,AWK,Digital Plumber,211,
+2017,13,X,APL,Packet Scanners,2164,6886
+2017,13,X,APL,Packet Scanners,3861798
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

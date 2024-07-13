@@ -135,6 +135,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,18,2,AWK,Duet,6858,
 2017,19,X,AWK,A Series of Tubes,FEZDNIVJWT,43
 2017,19,2,AWK,A Series of Tubes,17200,
+2017,20,X,AWK,Particle Swarm,125,58060
+2017,20,2,AWK,Particle Swarm,461,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

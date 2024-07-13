@@ -127,6 +127,10 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,14,2,C,Disk Defragmentation,1018,
 2017,15,X,Forth,Dueling Generators,592,3422
 2017,15,2,Forth,Dueling Generators,320,
+2017,16,X,AWK,Permutation Promenade,dcmlhejnifpokgba,1464
+2017,16,2,AWK,Permutation Promenade,ifocbejpdnklamhg,
+2017,17,X,Forth,Spinlock,1561,927
+2017,17,2,Forth,Spinlock,33454823,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

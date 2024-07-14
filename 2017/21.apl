@@ -39,7 +39,13 @@ Expand ← {
 	0=2|⊃⍴⍵: ExpandE ⍵
 	ExpandO ⍵
 }
+CountLoMem ← {
+	⍺<3: +/∊'#'=(Expand⍣⍺)⍵
+	M ← (Expand⍣3)⍵
+	+/((⍺-3)∘CountLoMem)¨,(9⍴0 1 0)/(9⍴0 1 0)⌿({⊂⍵}⌺3 3)M
+}
 PartA ← +/∊'#'=(Expand⍣5) 3 3⍴'.#...####'
-PartB ← +/∊'#'=(Expand⍣18) 3 3⍴'.#...####'
+⍝PartB ← +/∊'#'=(Expand⍣18) 3 3⍴'.#...####'
+PartB ← 18 CountLoMem 3 3⍴'.#...####'
 ⎕ ← PartA PartB
 )OFF

@@ -137,7 +137,7 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,19,2,AWK,A Series of Tubes,17200,
 2017,20,X,AWK,Particle Swarm,125,58060
 2017,20,2,AWK,Particle Swarm,461,
-2017,21,X,APL,Fractal Art,167,55448
+2017,21,X,APL,Fractal Art,167,55106
 2017,21,2,APL,Fractal Art,2425195,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,

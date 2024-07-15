@@ -141,6 +141,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,21,2,APL,Fractal Art,2425195,
 2017,22,X,AWK,Sporifica Virus,5259,15370
 2017,22,2,AWK,Sporifica Virus,2511722,
+2017,23,X,Forth,Coprocessor Conflagration,4225,853
+2017,23,2,Forth,Coprocessor Conflagration,905,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

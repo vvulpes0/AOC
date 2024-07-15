@@ -148,6 +148,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,25,X,AWK,The Halting Problem,5744,2736
 2018,01,X,Forth,Chronal Calibration,529,36
 2018,01,2,Forth,Chronal Calibration,464,
+2018,02,X,Forth,Inventory Management System,5928,47
+2018,02,2,Forth,Inventory Management System,bqlporuexkwzyabnmgjqctvfs,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

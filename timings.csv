@@ -156,8 +156,8 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2018,04,2,AWK,Repose Record,139543,
 2018,05,X,Forth,Alchemical Reduction,9154,17324
 2018,05,2,Forth,Alchemical Reduction,4556,
-2018,06,X,Chronal Coordinates,5626,4270
-2018,06,2,Chronal Coordinates,46554,
+2018,06,X,AWK,Chronal Coordinates,5626,4270
+2018,06,2,AWK,Chronal Coordinates,46554,
 2021,1,X,AWK,Sonar Sweep,1759,11
 2021,1,2,AWK,Sonar Sweep,1805,
 2021,2,X,AWK,Dive!,1383564,12

@@ -317,3 +317,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2023,25,X,Haskell,Snowverload,562912,60
 2024,01,X,Java,Historian Hysteria,1341714,118
 2024,01,2,Java,Historian Hysteria,27384707,
+2024,02,X,Java,Red-Nosed Reports,341,168
+2024,02,2,Java,Red-Nosed Reports,404,

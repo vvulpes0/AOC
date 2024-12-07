@@ -122,7 +122,7 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2017,12,X,AWK,Digital Plumber,288,25
 2017,12,2,AWK,Digital Plumber,211,
 2017,13,X,APL,Packet Scanners,2164,6886
-2017,13,2,APL,Packet Scanners,3861798
+2017,13,2,APL,Packet Scanners,3861798,
 2017,14,X,C,Disk Defragmentation,8304,18
 2017,14,2,C,Disk Defragmentation,1018,
 2017,15,X,Forth,Dueling Generators,592,3422

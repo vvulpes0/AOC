@@ -15,28 +15,28 @@ class Day08 {
 		implements Comparable<Vec2> {
 		public final int x;
 		public final int y;
-		Vec2() { this.x = 0; this.y = 0; }
+		Vec2() { x = 0; y = 0; }
 		Vec2(int x, int y) { this.x = x; this.y = y; }
 		public Vec2 add(Vec2 b) {
-			return new Vec2(this.x + b.x, this.y + b.y);
+			return new Vec2(x + b.x, y + b.y);
 		}
 		public Vec2 subtract(Vec2 b) {
-			return new Vec2(this.x - b.x, this.y - b.y);
+			return new Vec2(x - b.x, y - b.y);
 		}
 		public Vec2 scale(int k) {
-			return new Vec2(k*this.x, k*this.y);
+			return new Vec2(k*x, k*y);
 		}
-		public Vec2 negate() { return this.scale(-1); }
+		public Vec2 negate() { return scale(-1); }
 		@Override public int compareTo(Vec2 v) {
-			if (this.x != v.x) return this.x - v.x;
-			return this.y - v.y;
+			if (x != v.x) return x - v.x;
+			return y - v.y;
 		}
 		@Override public boolean equals(Object o) {
 			if (getClass() != o.getClass()) return false;
-			return this.compareTo((Vec2)o) == 0;
+			return compareTo((Vec2)o) == 0;
 		}
 		@Override public int hashCode() {
-			return this.x ^ this.y ^ 0xdeadbeef;
+			return x ^ y ^ 0xdeadbeef;
 		}
 	}
 	private static class Roof {
@@ -44,9 +44,9 @@ class Day08 {
 		private int xsize;
 		private int ysize;
 		Roof() {
-			this.map = new HashMap<Character,ArrayList<Vec2>>();
-			this.xsize = 0;
-			this.ysize = 0;
+			map = new HashMap<Character,ArrayList<Vec2>>();
+			xsize = 0;
+			ysize = 0;
 		}
 		public static Roof read(InputStream instream) {
 			Scanner in = new Scanner(instream);
@@ -71,25 +71,25 @@ class Day08 {
 			return out;
 		}
 		private boolean good(Vec2 p) {
-			return p.x >= 0 && p.x < this.xsize
-				&& p.y >= 0 && p.y < this.ysize;
+			return p.x >= 0 && p.x < xsize
+				&& p.y >= 0 && p.y < ysize;
 		}
 		public int countAntinodes() {
-			Iterator<Character> types = this.map.keySet().iterator();
+			Iterator<Character> types = map.keySet().iterator();
 			HashSet<Vec2> out = new HashSet<Vec2>();
 			while (types.hasNext()) {
-				ArrayList<Vec2> antennae = this.map.get(types.next());
+				ArrayList<Vec2> antennae = map.get(types.next());
 				for (int i = 0; i < antennae.size(); i++) {
 					Vec2 a = antennae.get(i);
 					for (int j = i + 1; j < antennae.size(); j++) {
 						Vec2 b = antennae.get(j);
 						Vec2 d = b.subtract(a);
 						Vec2 p = a.subtract(d);
-						if (this.good(p)) {
+						if (good(p)) {
 							out.add(p);
 						}
 						p = b.add(d);
-						if (this.good(p)) {
+						if (good(p)) {
 							out.add(p);
 						}
 					}
@@ -98,11 +98,11 @@ class Day08 {
 			return out.size();
 		}
 		public int countBntinodes() {
-			Iterator<Character> types = this.map.keySet().iterator();
+			Iterator<Character> types = map.keySet().iterator();
 			HashSet<Vec2> out = new HashSet<Vec2>();
-			int m = Math.max(this.xsize, this.ysize);
+			int m = Math.max(xsize, ysize);
 			while (types.hasNext()) {
-				ArrayList<Vec2> antennae = this.map.get(types.next());
+				ArrayList<Vec2> antennae = map.get(types.next());
 				for (int i = 0; i < antennae.size(); i++) {
 					Vec2 a = antennae.get(i);
 					for (int j = i + 1; j < antennae.size(); j++) {
@@ -110,7 +110,7 @@ class Day08 {
 						Vec2 d = b.subtract(a);
 						for (int k = -m; k <= m; k++) {
 							Vec2 p = a.add(d.scale(k));
-							if (this.good(p)) {
+							if (good(p)) {
 								out.add(p);
 							}
 						}

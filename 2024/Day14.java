@@ -28,9 +28,9 @@ class Day14 {
 		}
 		int xbase = -1;
 		int ybase = -1;
-		int t = -1;
-		while (xbase < 0 || ybase < 0) {
-			t++;
+		int mindx = -1;
+		int mindy = -1;
+		for (int t = 0; t < Math.max(w,h); t++) {
 			int ux = 0;
 			int uy = 0;
 			Iterator<Robot> i = robots.iterator();
@@ -51,12 +51,19 @@ class Day14 {
 			}
 			xdist /= robots.size();
 			ydist /= robots.size();
-			if (xbase < 0 && xdist < 15) xbase = t;
-			if (ybase < 0 && ydist < 15) ybase = t;
+			if (mindx < 0 || xdist < mindx) {
+				xbase = t;
+				mindx = xdist;
+			}
+			if (mindy < 0 || ydist < mindy) {
+				ybase = t;
+				mindy = ydist;
+			}
 		}
 		int d = ybase - xbase;
 		int p = 51*w*d + xbase;
 		int partB = (1 - p/(w*h))*w*h + p;
+		partB = ((partB%(w*h)) + (w*h))%(w*h);
 		System.out.println(q1*q2*q3*q4 + "\t" + partB);
 	}
 	static class Robot {

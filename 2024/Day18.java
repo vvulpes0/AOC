@@ -30,18 +30,16 @@ class Day18 {
 			x = in.nextInt();
 			y = in.nextInt();
 			map.get(y).set(x,false);
-			if (x == 0) mapp.union(v(x,y), -2);
-			if (x+1 == size) mapp.union(v(x,y), -1);
-			if (y == 0) mapp.union(v(x,y), -1);
-			if (y+1 == size) mapp.union(v(x,y), -2);
-			if (y>0 && !map.get(y-1).get(x))
-				mapp.union(v(x,y), v(x,y-1));
-			if (y+1<size && !map.get(y+1).get(x))
-				mapp.union(v(x,y), v(x,y+1));
-			if (x>0 && !map.get(y).get(x-1))
-				mapp.union(v(x,y), v(x-1,y));
-			if (x+1<size && !map.get(y).get(x+1))
-				mapp.union(v(x,y), v(x+1,y));
+			for (int i = -1; i <= 1; i++) {
+				if (y+i < 0 || y+i >= size) continue;
+				for (int j = -1; j <= 1; j++) {
+					if (x+j < 0 || x+j >= size) continue;
+					if (map.get(y+i).get(x+j)) continue;
+					mapp.union(v(x,y), v(x+j,y+i));
+					if (y==0 || x+1==size) mapp.union(v(x,y),-1);
+					if (x==0 || y+1==size) mapp.union(v(x,y),-2);
+				}
+			}
 			nr++;
 			if (nr == firstN) partA = goA(map);
 			if (mapp.get(-1) == mapp.get(-2)) break;

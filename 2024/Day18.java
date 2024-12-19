@@ -10,10 +10,8 @@ class Day18 {
 	public static void main(String[] args) {
 		ArrayList<ArrayList<Boolean>> map = new ArrayList<ArrayList<Boolean>>();
 		Partition<Integer> mapp = new Partition<Integer>();
-		mapp.add(-1); // TOP
-		mapp.add(-2); // LEFT
-		mapp.add(-3); // RIGHT
-		mapp.add(-4); // BOTTOM
+		mapp.add(-1); // TOP/RIGHT
+		mapp.add(-2); // BOTTOM/LEFT
 		for (int i = 0; i < size; i++) {
 			ArrayList<Boolean> bs = new ArrayList<Boolean>();
 			for (int j = 0; j < size; j++) {
@@ -33,9 +31,9 @@ class Day18 {
 			y = in.nextInt();
 			map.get(y).set(x,false);
 			if (x == 0) mapp.union(v(x,y), -2);
-			if (x+1 == size) mapp.union(v(x,y), -3);
+			if (x+1 == size) mapp.union(v(x,y), -1);
 			if (y == 0) mapp.union(v(x,y), -1);
-			if (y+1 == size) mapp.union(v(x,y), -4);
+			if (y+1 == size) mapp.union(v(x,y), -2);
 			if (y>0 && !map.get(y-1).get(x))
 				mapp.union(v(x,y), v(x,y-1));
 			if (y+1<size && !map.get(y+1).get(x))
@@ -47,8 +45,6 @@ class Day18 {
 			nr++;
 			if (nr == firstN) partA = goA(map);
 			if (mapp.get(-1) == mapp.get(-2)) break;
-			if (mapp.get(-1) == mapp.get(-4)) break;
-			if (mapp.get(-2) == mapp.get(-3)) break;
 		}
 		System.out.println(partA + "\t" + x + "," + y);
 	}

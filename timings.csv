@@ -353,3 +353,5 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2024,18,2,Java,RAM Run,51 50,
 2024,19,X,Java,Linen Layout,278,318
 2024,19,2,Java,Linen Layout,569808947758890,
+2024,20,X,Java,Race Condition,1327,308
+2024,20,2,Java,Race Condition,985737,

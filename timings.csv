@@ -355,3 +355,26 @@ Year,Day,Part,Lang,Name,Result,Time (ms)
 2024,19,2,Java,Linen Layout,569808947758890,
 2024,20,X,Java,Race Condition,1327,308
 2024,20,2,Java,Race Condition,985737,
+2025,01,X,Python,Secret Entrance,1168,42
+2025,01,2,Python,Secret Entrance,7199,
+2025,02,X,Python,Gift Shop,54234399924,42
+2025,02,2,Python,Gift Shop,70187097315,
+2025,03,X,Python,Lobby,17316,42
+2025,03,2,Python,Lobby,171741365473332,
+2025,04,X,Python,Printing Department,1493,67
+2025,04,2,Python,Printing Department,9194,
+2025,05,X,Python,Cafeteria,638,61
+2025,05,2,Python,Cafeteria,352946349407338,
+2025,06,X,Python,Trash Compactor,4951502530386,50
+2025,06,2,Python,Trash Compactor,8486156119946,
+2025,07,X,Python,Laboratories,1667,40
+2025,07,2,Python,Laboratories,62943905501815,
+2025,08,X,Python,Playground,163548,615
+2025,08,2,Python,Playground,772452514,
+2025,09,X,Python,Movie Theater,4755429952,297
+2025,09,2,Python,Movie Theater,1429596008,
+2025,10,X,Python,Factory,484,383
+2025,10,2,Python,Factory,19210,
+2025,11,X,Python,Reactor,497,78
+2025,11,2,Python,Reactor,358564784931864,
+2025,12,X,Python,Christmas Tree Farm,463,41

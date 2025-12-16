@@ -1,0 +1,1473 @@
+\documentclass[10pt]{book}
+\usepackage{noweb}
+\usepackage[b6paper,margin=1cm,%
+	marginparwidth=6mm,marginparsep=2mm,%
+	includehead,includefoot]{geometry}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{marginnote}
+\usepackage{mathtools}
+\usepackage{newtxtext,newtxmath}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\noweboptions{smallcode,noxref,hideunuseddefs}
+\renewcommand{\chaptername}{Day}
+\newcommand{\standout}[1]{\textbf{\textcolor{red!75!yellow}{#1}}}
+
+\title{A Walkthrough of the 2025~Advent~of~Code}
+\author{Dakotah Lambert}
+\date{December 2025}
+
+\begin{document}%
+@ \def\nwmargintag#1{\marginnote{#1}}%
+\def\nwthemargintag#1{#1}%
+\def\nwendcode{\endtrivlist \endgroup \vfil\penalty10\vfilneg}%
+\let\nwdocspar=\smallbreak
+\frontmatter
+\maketitle
+\tableofcontents
+\chapter{Preface}
+Each year since 2015, Eric Wastl has put on a challenge called
+the Advent of Code,
+in which participants from around the world
+write programs to solve a series of daily Christmas-themed puzzles.
+One interesting aspect of the format
+is that, on all days but the last, the puzzle comes in two parts,
+but only the first part is given up-front.
+Only after this part is solved is the second part visible,
+often designed to test the scalability of the initial solution,
+or to expand on it in interesting ways.
+Both parts use the same (personalized) input file.
+The input is always provided as \texttt{input.txt}.
+As I prefer to work in a single directory,
+I rename my input files by day, as \texttt{01.txt} or \texttt{12.txt},
+for example.
+This is the convention that I will use throughout.
+
+The puzzles cover a broad range of topics
+in computer science and mathematics.
+Some are harder than others,
+but they are always designed to be solvable
+in any programming language
+without relying on any external libraries,
+and, importantly, without ever using any floating-point arithmetic.
+Some puzzles do require at least 64-bit integers,
+but none require going beyond that,
+so solving in C or Java is perfectly viable.
+
+In this write-up,
+I present solutions mathematically
+and as Python code.
+In some cases, I analyze the time-complexity of the solution
+with respect to the size of the input.
+I make no claim that my solutions are the most optimal
+by any metric,
+and would be delighted to hear of better solutions!
+
+\mainmatter
+\chapter{Secret Entrance}
+The story begins with you approaching a secret base at the North Pole,
+ready to help the Elves decorate to prepare for Christmas.
+
+For part one, we are told that there is a safe
+numbered whose dial begins at 50.
+Clockwise around the dial are the numbers 0--99.
+Your input file consists of a series of numbers, one per line,
+each prefixed by either L (``left'', anticlockwise)
+or R (``right'', clockwise),
+indicating how far you should turn the dial.
+The password is not contained within the safe;
+it is the number of times the dial lands on 0
+after completing one whole instruction.
+
+For example, if given the following input, the password will be three:
+\begin{quote}\noindent\ttfamily\small
+L72\\
+R22\\
+R18\\
+R80\\
+R4\\
+L2\\
+R12\\
+L20\\
+R8
+\end{quote}
+Begin at 50, and compute the cumulative sum for each value, modulo 100:
+if the direction is ``L'' then treat the value as negative,
+otherwise the direction is ``R'' and you should treat the value as positive.
+(It does not matter whether you reduce modulo 100 as you go
+or as a separate step at the end.)
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Line}&\textbf{Value}&\textbf{Total from 50}&\textbf{Modulo 100}\\
+\midrule
+L72&-72&-22&78\\
+R22&22&0&\standout{0}\\
+R18&18&18&18\\
+R80&80&98&98\\
+R4&4&102&2\\
+L2&-2&100&\standout{0}\\
+R12&12&112&12\\
+L20&-20&92&92\\
+R8&8&100&\standout{0}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In Python, this is accomplished with something like the following,
+after the appropriate helper functions have been defined.
+<<day one part one>>=
+reduce_mod100(cumsum(rotations, 50)).count(0)
+@ The helper functions include the cumulative sum
+and reduction modulo 100.
+<<day one definitions>>=
+def cumsum(xs, start=0):
+	sums = [start] + xs
+	for i in range(1, len(sums)): sums[i] += sums[i - 1]
+	return sums[1:]
+<<day one definitions>>=
+def reduce_mod100(xs):
+	return [x%100 for x in xs]
+@
+Part two tells us that, unfortunately, this is not the actual password.
+Instead of counting after each whole instruction,
+we should be counting after each individual tick
+whether the dial landed at zero.
+In this case, it helps to keep the full cumulative sum.
+At first glance, it seems that the zero point is crossed
+whenever the largest multiple of 100
+less than or equal to the current value changes;
+the real input contains large rotations (like 9000)
+for which this point is crossed many times.
+
+The interesting cases are when the starting or ending value
+is exactly a multiple of 100.
+For a rightward rotation,
+the above description correctly counts the number of landings on zero.
+For a leftward rotation,
+ticking away from a multiple of 100 should not count as a new landing,
+but ending on an exact multiple of 100 should;
+this can be rectified by offsetting the positions by negative one
+for leftward rotations.
+Add up the modified absolute differences, again starting from 50
+yields the number of landings.
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+\textbf{Line}&\textbf{Value}&\textbf{Total from 50}&\textbf{Over 100}
+&\textbf{Contribution}\\
+\midrule
+L72&-72&-22&-1&1\\
+R22&22&0&0&1\\
+R18&18&18&0&0\\
+R80&80&98&0&0\\
+R4&4&102&1&1\\
+L2&-2&100&1&1\\
+R12&12&112&1&0\\
+L20&-20&92&0&1\\
+R8&8&100&1&1\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+<<day one part two>>=
+landings(cumsum(rotations, 50), 50)
+<<day one definitions>>=
+def landings(xs, start=0):
+	last = start
+	out = 0
+	for x in xs:
+		delta = 1 if x < last else 0
+		out += abs((x - delta)//100 - (last - delta)//100)
+		last = x
+	return out
+@
+Reading the input is a matter of grabbing each line,
+converting the numeric portion to an integer,
+and negating it if the direction is ``L''.
+<<read day one input as \textup{\texttt{rotations}}>>=
+with open('01.txt') as file:
+	lines = [line.strip() for line in file]
+rotations = [
+	int(x[1:]) if x[0] == 'R' else -int(x[1:])
+	for x in lines
+]
+@
+Collecting these parts,
+the Python file for day one will look like this.
+<<01s.py>>=
+<<day one definitions>>
+if __name__ == '__main__':
+	<<read day one input as \textup{\texttt{rotations}}>>
+	print(<<day one part one>>, end='\t')
+	print(<<day one part two>>)
+@
+Especially when input lines describe incremental updates (like in this puzzle)
+or separate subproblems,
+I like to write a solution that streams through the input,
+updating the state and partial results along the way.
+So the structure of the program is to initialize some state
+then walk through the updates and print the result.
+<<01.py>>=
+def parse(line):
+	x = int(line[1:])
+	return -x if line[0] == 'L' else x
+def update(x, accum, a, b):
+	delta = 1 if x < 0 else 0
+	diff = (accum - delta)//100 - (accum + x - delta)//100
+	b += abs(diff)
+	accum += x
+	a += 1 if accum%100 == 0 else 0
+	return accum, a, b
+if __name__ == '__main__':
+	state = 50, 0, 0
+	with open('01.txt') as file:
+		for line in file:
+			state = update(parse(line), *state)
+	print(*state[-2:], sep='\t')
+@
+This update function has no loops and operates in constant time.
+It runs once per input line.
+Thus, day one is solved in linear time with respect to the input size.
+
+\chapter{Gift Shop}
+You enter the base and proceed through the gift shop toward the lobby.
+But you can never just get where you're trying to go!
+The clerk pulls you aside to identify invalid product IDs
+in the database.
+All IDs, including invalid ones, are numeric, with no leading zeros.
+
+For part one, you are told that an ID is invalid
+if it is a sequence of digits repeated twice;
+for instance \(484848\) is valid
+but \(\overgroup{69}\overgroup{69}\) is invalid.
+Given a number \(n\), this is a simple test.
+<<day two validity one>>=
+def isvalid(n):
+	s = str(n)
+	midpoint = len(s)//2
+	return s[:midpoint] != s[midpoint:]
+@
+For part two, it turns out that an ID is invalid
+if it is a sequence of digits repeated \emph{at least} twice.
+This is the case whenever there is a position
+that divides the length of the string
+from which the remainder can be cleanly overlaid on the beginning.
+For instance, \(\overgroup{48}\overgroup{48}\overgroup{48}\)
+is now considered invalid,
+and \(\rlap{$\overgroup{\phantom{4848}}$}48\!\undergroup{4848}\)
+witnesses this.
+We can test this as well.
+@
+<<day two validity two>>=
+def isvalid2(n):
+	s = str(n)
+	points = [d for d in range(1,len(s)) if len(s)%d == 0]
+	i = 0
+	while points:
+		if any(p + i == len(s) for p in points):
+			return False
+		points = [p for p in points if s[p + i] == s[i]]
+		i += 1
+	return True
+@
+The goal is to find the sum of the invalid IDs.
+The input is provided as a sequence of (inclusive) nonoverlapping ranges;
+expanding the ranges results in testing a couple million values,
+each having at most around ten digits.
+Running this test on my machine takes less than two seconds.
+@
+We can, however, do much better.
+To do so, think about what operations transform
+a small sequence to a larger repeating sequence:
+to map \(2\) to \(22\), we multiply by \(11\),
+or to reach \(222\) we multiply by \(111\).
+To map \(42\) to \(4242\), we multiply by \(0101\),
+leading zeros included for emphasis.
+The multiplier is the number with the desired total quantity of digits
+(including leading zeros)
+with \(1\) in positions where the units place of each repetition should be
+and \(0\) everywhere else.
+The number consisting of \(n\) copies of \(9\) is \(10^n - 1\).
+So \(M_{n,k}=\frac{10^n - 1}{10^k - 1}\) is the multiplier
+that transforms \(k\)-digit numbers into \(n\)-digit numbers
+repeating that length-\(k\) sequence of digits,
+whenever \(k\) divides \(n\).
+Thus, a number with \(n\) digits is valid if it is not a multiple
+of \(M_{n,k}\) for any \(k\) that divides \(n\).
+<<day two definitions>>=
+def M(n, k):
+	return (10**n - 1)//(10**k - 1)
+@
+Recall that we are not looking for the invalid IDs themselves,
+only their sum.
+Given a range \([a,b)\) of length-\(n\) numbers,
+we can find the sum of in-range invalid IDs
+whose repeated portion is of length \(k\).
+The first is \(M_{n,k}\cdot\left\lceil\frac{a}{M_{n,k}}\right\rceil\).
+The last is \(M_{n,k}\cdot\left\lfloor\frac{b - 1}{M_{n,k}}\right\rfloor\).
+If the purported last is less than the purported first,
+nothing is in-range and the result is zero.
+Otherwise, the sum is as follows.
+\[
+M_{n,k}
+\sum_{\mathclap{i=\left\lceil\frac{a}{M_{n,k}}\right\rceil}}%
+    ^{\mathclap{\left\lfloor\frac{b-1}{M_{n,k}}\right\rfloor}}
+i
+\]
+This can be separated using two sums of the form
+\(\sum_{i=0}^{p}i=\frac{p(p+1)}{2}\),
+by setting \(x=\left\lceil\frac{a}{M_{n,k}}\right\rceil\)
+and \(y=\left\lfloor\frac{b - 1}{M_{n,k}}\right\rfloor\):
+\[
+M_{n,k}\left( \sum_{i=0}^{y}i - \sum_{i=0}^{x - 1}i \right)
+\]
+<<day two definitions>>=
+def msumin(m, r):
+	x = (r.start + m - 1)//m
+	y = (r.stop - 1)//m
+	return 0 if y < x else m*(y*(y+1) - x*(x-1))//2
+@
+This leaves a couple steps:
+\begin{itemize}
+\item Split each input range by length, then
+\item Sum the multiples of appropriate \(M_{n,k}\) for each range.
+\end{itemize}
+However, it is worth noting that
+if \(i\) divides \(j\) and \(j\) divides \(n\),
+then an \(n\)-digit number consisting of a repeated \(i\)-digit sequence
+also consists of a \(j\)-digit sequence;
+\(M_{n,j}\) divides \(M_{n,i}\).
+Make sure that each partial sum does not overcount anything
+by subtracting off the contribution of smaller divisors.
+@ \clearpage
+<<day two definitions>>=
+def update(r, a, b):
+	n = len(str(r.start))
+	ds = [x for x in range(1, n) if n%x == 0]
+	sums = dict((d, msumin(M(n, d), r)) for d in ds)
+	if n%2 == 0: a += sums[n//2]
+	for d in ds:
+		for x in [x for x in ds if x < d and d%x == 0]:
+			sums[d] -= sums[x]
+	return a, b + sum(sums.values())
+@
+What remains is to grab the input ranges and split them by length.
+The input itself comes on a single line.
+Ranges are separated by commas from one another,
+with a hyphen between the low and high value.
+The high value is incremented by one to obtain the preferred range format.
+@
+<<day two definitions>>=
+def parse(line):
+	out = []
+	for r in line.strip().split(','):
+		current, end = [int(x) for x in r.split('-')]
+		end = end + 1
+		while current < end:
+			n = min(10**len(str(current)), end)
+			out.append(range(current, n))
+			current = n
+	return out
+<<02.py>>=
+<<day two definitions>>
+if __name__ == '__main__':
+	state = 0, 0
+	with open('02.txt') as file:
+		for r in parse(next(file)):
+			state = update(r, *state)
+	print(*state, sep='\t')
+@
+
+\chapter{Lobby}
+You enter the lobby and are again pulled aside by an Elf to fix something.
+In this case, you're given a collection of battery banks (one per line),
+where each battery has a ``joltage rating'' from 1--9,
+to restore power to the escalator.
+Your goal is to turn on exactly two batteries in each bank,
+to get the largest total joltage:
+the string formed by the batteries you turned on.
+You cannot rearrange batteries.
+For example:
+\begin{itemize}
+\item Given the bank ``82\standout{9}274712\standout{9}32457'',
+you can get 99, but
+\item Given the bank ``242512632532\standout{7}1\standout{2}'',
+you can get only 72.
+\end{itemize}
+For part two, the problem is the same,
+but you activate twelve batteries rather than two.
+The same examples now give much larger results:
+\begin{itemize}
+\item Given ``82\standout{9}2\standout{74712932457}'',
+you can get 974712932457.
+\item Given the bank ``2\standout{4}2\standout{5}1\standout{2632532712}'',
+you can get 452632532712.
+\end{itemize}
+@
+The key idea is that you want to grab the largest digit
+that leaves enough left over afterward to finish the number.
+Always take the first copy of whichever digit you find,
+as that leaves the most available to build from.
+<<day three definitions>>=
+def activate(s, n):
+	digits = []
+	while n != 1:
+		top = max(s[:-(n-1)])
+		digits.append(top)
+		s = s[s.index(top) + 1:]
+		n -= 1
+	digits.append(max(s))
+	return int(''.join(digits))
+@ Then part one is solved by activating two batteries, part two by twelve.
+<<day three definitions>>=
+def update(s, a, b):
+	return a + activate(s, 2), b + activate(s, 12)
+@
+Collecting this into the template consisting of
+initialization, update, and display, we have the following.
+<<03.py>>=
+<<day three definitions>>
+if __name__ == '__main__':
+	state = 0, 0
+	with open('03.txt') as file:
+		for bank in file:
+			state = update(bank.strip(), *state)
+	print(*state, sep='\t')
+@
+
+\chapter{Printing Department}
+After fixing the escalator you descend to the printing department,
+and, perhaps surprisingly,
+the issue you run into is not with the printer.
+No, the issue is still progressing through the base.
+The Elves suggest that they can break a wall with their forklift
+to let you into the cafeteria.
+Reasonable.
+@
+Your input is a 2D-grid:
+a map of paper rolls (``@'') and empty space (``.'').
+A roll is \emph{accessible} if, and only if,
+there are fewer than four rolls of paper
+in its eight adjacent positions.
+Alternatively, there are fewer than five rolls
+in the \(3\times 3\) region centered on that roll.
+For instance, in the following input,
+there are 25 accessible rolls, shown in bold,
+of the 59 total rolls.
+\begin{quote}\ttfamily\small\noindent
+.\standout{@}..@\standout{@}.\standout{@}.\standout{@}\\[-3pt]%
+.@@@@@.\standout{@}.\standout{@}\\[-3pt]%
+{@}@@.@@@\standout{@}..\\[-3pt]%
+\standout{@}@.@@@..@\standout{@}\\[-3pt]%
+...@@@\standout{@}.@@\\[-3pt]%
+\standout{@}\standout{@}@..@..\standout{@}\standout{@}\\[-3pt]%
+..@@@.\standout{@}...\\[-3pt]%
+.\standout{@}@@@.\standout{@}.\standout{@}.\\[-3pt]%
+.\standout{@}.@@.@.\standout{@}.\\[-3pt]%
+.\standout{@}..\standout{@}@\standout{@}\standout{@}.\standout{@}
+\end{quote}
+@
+I generally like to avoid working directly on grids,
+so my first instinct was to parse this into a graph structure.
+For efficient indexing, each roll is assigned an integer ID.
+During parsing, a mapping between positions and IDs is maintained.
+As the input is read, top-to-bottom, left-to-right,
+newly encountered rolls are bidirectionally joined to older ones.
+<<day four definitions>>=
+def parse(grid):
+	ids = dict()
+	graph = dict()
+	n = 0
+	for i, line in enumerate(grid):
+		line = line.strip()
+		for j, c in enumerate(line):
+			if c != '@':
+				continue
+			ids[i, j] = n
+			graph[n] = [ids[key] for key in [
+					(i - 1, j - 1),
+					(i - 1, j),
+					(i - 1, j + 1),
+					(i, j - 1)
+				] if key in ids
+			]
+			for key in graph[n]:
+				graph[key].append(n)
+			n += 1
+	return graph
+@
+For part one, we need to find out how many rolls are accessible.
+These are the rolls with fewer than four outgoing connections.
+For part two, we remove those accessible rolls and repeat
+until no more remain accessible.
+@
+<<day four definitions>>=
+def solve(graph):
+	ready = [r for r,v in graph.items() if len(v) < 4]
+	a = b = len(ready)
+	while ready:
+		for roll in ready:
+			for neighbor in graph[roll]:
+				graph[neighbor].remove(roll)
+			del graph[roll]
+		ready = [r for r,v in graph.items() if len(v) < 4]
+		b += len(ready)
+	return a, b
+@
+<<04.py>>=
+<<day four definitions>>
+if __name__ == '__main__':
+	with open('04.txt') as file:
+		print(*solve(parse(file)), sep='\t')
+@
+
+\chapter{Cafeteria}
+Through property damage you arrive in the cafeteria.
+The Elves don't care, they just give you another task.
+Your job: to determine which ingredients are fresh.
+You are given a set of ID ranges in the form ``low--high'',
+inclusive yet again,
+one per line.
+These inclusive ranges are the IDs of fresh ingredients.
+These ranges are followed by a blank line,
+then the remaining lines each consist of a single ID
+representing an available ingredient.
+@
+For part one, you are asked to count the fresh available ingredients.
+For part two, you are asked to count the total number of fresh IDs.
+The difficulty comes in the fact that the ranges may overlap!
+For instance, given the following input,
+there are two fresh available ingredients for part one (highlighted),
+and 194 fresh IDs total for part two.
+@ \clearpage
+\begin{quote}\ttfamily\small\noindent
+42-150\\
+120-200\\
+20-50\\
+500-512\\
+\\
+3\\
+\standout{92}\\
+\standout{150}\\
+410\\
+720
+\end{quote}
+@
+My strategy here is to first collect a set of nonoverlapping ranges.
+When a new range is to be inserted,
+existing ranges are modified to remove regions
+that overlap with the new one.
+I modify the inbound ranges to be in the preferred \([a,b)\) format.
+There are a few cases:
+\begin{itemize}
+\item If the existing end is less than or equal to the new start,
+	there is no overlap. Move on.
+\item If the existing start is greater than or equal to the new end,
+	there is no overlap. Move on.
+\item If the existing start is greater than or equal to the new start,
+	set it to be the new end instead.
+	Remove if empty and move on.
+\item If the existing end is less than or equal to the new end,
+	set it to be the new start instead.
+	Remove if empty and move on.
+\item Finally, if the new range is wholly inside the old,
+	stop trying.
+\end{itemize}
+This guarantees that there are at most as many ranges
+in the final collection as in the initial description,
+although there may be fewer.
+@
+<<day five definitions>>=
+def insert(new, ranges):
+	i = 0
+	while i < len(ranges):
+		r = ranges[i]
+		if r.stop <= new.start or r.start >= new.stop:
+			i += 1
+		elif r.start >= new.start:
+			if new.stop < r.stop:
+				ranges[i] = range(new.stop, r.stop)
+				i += 1
+			else:
+				ranges[i] = ranges.pop()
+		elif r.stop <= new.stop:
+			if r.start <= new.start:
+				ranges[i] = range(r.start, new.start)
+				i += 1
+			else:
+				ranges[i] = ranges.pop()
+		else:
+			return
+	ranges.append(new)
+@
+With this, the solution is as follows:
+\begin{enumerate}
+\item Initialize accumulators for parts one (\(a\)) and two (\(b\))
+      and an empty range collection.
+\item Until reaching an empty line, parse and insert a range.
+\item Skip that empty line.
+\item For each available ingredient, add 1 to \(a\) if it is in any range.
+\item For each range, add its length to \(b\)
+\item State the results.
+\end{enumerate}
+@
+<<05.py>>=
+<<day five definitions>>
+if __name__ == '__main__':
+	a = b = 0
+	ranges = []
+	with open('05.txt') as file:
+		for line in file:
+			line = line.strip()
+			if not line: break
+			lo, hi = [int(x) for x in line.split('-')]
+			insert(range(lo, hi + 1), ranges)
+		for line in file:
+			x = int(line)
+			a += 1 if any(x in r for r in ranges) else 0
+	b += sum(len(r) for r in ranges)
+	print(a, b, sep='\t')
+@
+
+\chapter{Trash Compactor}
+You helped with the ingredients but find yourself now in a trash compactor.
+For some reason there are octopuses here.
+(Yes, octopuses, the plural of octopus.)
+They might be squid.
+Suffering cephalopods, needing help with math homework.
+Having come this far, you can handle this.
+
+The homework is presented as in the following sample input,
+with a fully blank column (consisting of a single space)
+between the parts.
+The numbers do not appear to be aligned as you might expect.
+The operation is at the bottom,
+either addition (+) or multiplication (\(\ast\)).
+\begin{quote}\ttfamily\small\noindent
+\begin{tabular}{@{}c@{}c@{}c@{}c@{}c@{}c@{}c@{}}
+ &1&1&\phantom{0}&2&1&\phantom{0}\\
+4&2&0&           &1&1&1\\
+6&9& &           & & &9\\
++& & &           &\(\ast\)& &
+\end{tabular}
+\end{quote}
+@
+For part one, this is \(11+420+69=500\) and \(21\cdot 111\cdot 9=20979\),
+which sum to \(25979\).
+This sum of solutions would be the answer to report.
+For part two, we are told that
+numbers are not read horizontally, but vertically.
+So instead, this would be \(46+129+10=185\) and \(21\cdot 11\cdot 19=4389\),
+which sum to \(4574\).
+@
+As mentioned,
+I try to avoid dealing with grids or keeping the full input around.
+The input is padded with spaces to make a full grid.
+So for each line but the last I update three lists:
+a per-problem sum for part one,
+a per-problem product for part one,
+and a per-column list of potential numbers, augmented one digit at a time.
+When the row with operations is reached,
+they are used to select the appropriate part-one answers
+and to combine the part-two numbers.
+@
+I don't strip the newline characters,
+so that there is naturally an empty column after the final digit column.
+Using ``\texttt{ns}'' to refer to the vertical numbers,
+``\texttt{sums}'' to refer to the sums of horizontal numbers, and
+``\texttt{prod}'' to refer to the products of horizontal numbers,
+the state is updated line by line as follows.
+@
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+\textbf{ns}&\textbf{sums}&\textbf{prod}\\\midrule
+{[None,1,1,None,2,1,None,None]}&{[11,21]}&{[11,21]}\\
+{[4,12,10,None,21,11,1,None]}&{[431,132]}&{[4620,2331]}\\
+{[46,129,10,None,21,11,19,None]}&{[500,141]}&{[318780,20979]}\\
+\bottomrule
+\end{tabular}
+\end{center}
+The sequence \([+,\ast]\) below tells us to select
+the first sum and the second product, \(500 + 20979 = 25979\).
+It also tells us that the first span of vertical numbers
+should be added (\(46+129+10=185\)),
+and that the second span should be multiplied
+(\(21*11*19=4389\)).
+Add those to get \(4574\), as desired.
+@
+Updating the state does constant work per column,
+and happens once per line.
+So that part operates in linear time with respect to the input size.
+Then the final line also demands work linear in the number of columns.
+Altogether, if there are \(n\) input characters,
+this solution runs in \(\Theta(n)\) time.
+@ \clearpage
+<<06.py>>=
+if __name__ == '__main__':
+	a = b = 0
+	with open('06.txt') as file:
+		line = next(file)
+		ns = [int(c) if c.isdigit() else None for c in line]
+		sums = [int(x) for x in line.split()]
+		prod = sums[:]
+		for line in file:
+			if '+' in line or '*' in line: break
+			nums = [int(x) for x in line.split()]
+			sums[:] = map(lambda x,y: x+y, sums, nums)
+			prod[:] = map(lambda x,y: x*y, prod, nums)
+			for i, c in enumerate(line):
+				if not c.isdigit(): continue
+				c = int(c)
+				if ns[i] is None:
+					ns[i] = c
+				else:
+					ns[i] *= 10
+					ns[i] += c
+		p2 = 0
+		for i,op in enumerate(line.split()):
+			n = ns.index(None, p2)
+			if op == '+':
+				a += sums[i]
+				b += sum(ns[p2:n])
+			elif op == '*':
+				a += prod[i]
+				x = 1
+				for y in ns[p2:n]:
+					x *= y
+				b += x
+			p2 = n + 1
+	print(a, b, sep='\t')
+@
+
+\chapter{Laboratories}
+You escape the trash compactor and find yourself in a research station.
+A teleportation station.
+You try it out, but the teleporter breaks as it finishes
+and you find yourself in a room whose only exit is a now broken teleporter.
+Diagnostic tools tell you that there is a problem with a tachyon manifold;
+your input is a diagram of this manifold.
+Most lines consist of either empty space (\texttt{.})
+or splitters (\texttt{\textasciicircum}).
+Never is there a splitter at the beginning or end of the line,
+and never are there two next to one another.
+The first and last lines are also devoid of splitters.
+Finally, the first line marks the starting position by \texttt{S}.
+@
+A tachyon beam begins at the starting \texttt{S}
+and travels directly downward.
+When it reaches the top of a splitter,
+it does not descend further directly downward,
+but splits into two beams:
+one in the column immediately to the left
+and one in the column immediately to the right.
+The question for part one is,
+how many times does the beam split on its way to the bottom?
+That is, how many times does it encounter a splitter on the way down?
+@
+Initialize the state by grabbing the first line
+and finding the column that contains the starting \texttt{S}.
+The state should be a set containing that single column.
+Then for each row, look at your current set of occupied columns.
+If the character at that position is `\texttt{.}'\@, retain it,
+while if it is `\texttt{\textasciicircum}', replace it by its neighbors
+and add one to the split count.
+@
+<<day seven definitions, first>>=
+def update(line, count, columns):
+	new = set()
+	for c in columns:
+		if line[c] == '^':
+			count += 1
+			new.add(c - 1)
+			new.add(c + 1)
+		else:
+			new.add(c)
+	return count, new
+@
+For part two, you are asked not how many times the beam splits,
+but how many paths a particle in the beam can take to the bottom.
+Initially, there is one path: at the starting position of the first row.
+But as the beam descends, it may diverge and reconverge.
+The number of paths should be retained at points of divergence,
+and added back together at points of reconvergence.
+Adjoin path-counts to turn the set into a dictionary.
+@
+<<day seven definitions>>=
+def update(line, count, columns):
+	new = dict()
+	for c, t in columns.items():
+		if line[c] == '^':
+			count += 1
+			new[c - 1] = new.get(c - 1, 0) + t
+			new[c + 1] = new.get(c + 1, 0) + t
+		else:
+			new[c] = new.get(c, 0) + t
+	return count, new
+@
+Upon reaching the bottom,
+the total number of paths is the sum
+of the paths leading to the individual ending columns.
+<<07.py>>=
+<<day seven definitions>>
+if __name__ == '__main__':
+	with open('07.txt') as file:
+		state = 0, {next(file).index('S'): 1}
+		for line in file:
+			state = update(line, *state)
+	print(state[0], sum(state[1].values()), sep='\t')
+@
+For example, the following five-by-five sample input at left
+has three splittings and four paths through its descent to the bottom,
+as shown to the right.
+The beam can go left--left, left--right, right--left, or right--right.
+\begin{quote}\small\ttfamily\noindent
+\begin{tabular}{@{}c@{}c@{}c@{}c@{}c@{\qquad}c@{}c@{}c@{}c@{}c@{}}%
+.&.&S&.&.&.&.&1&.&.\\
+.&.&\textasciicircum&.&.&.&1&\textasciicircum&1&.\\
+.&.&.&\textasciicircum&.&.&1&1&\textasciicircum&1\\
+.&\textasciicircum&.&.&.&1&\textasciicircum&2&.&1\\
+.&.&.&.&.&1&.&2&.&1
+\end{tabular}\end{quote}
+@
+If the \texttt{columns} and \texttt{new} variables
+were arrays with as many entries as columns in the input
+(rather than dictionaries),
+then the \texttt{update} would clearly be \(\Theta(c)\)
+for \(c\) this number of columns.
+As a hash table can be exploded into or derived
+from such an array in linear time,
+we can assume that this time complexity must hold.
+As this function runs \(r\) times, where \(r\) is the number of rows,
+then the worst-case time complexity is \(\Theta(rc)=\Theta(n)\),
+where \(n\) is the number of input characters.
+The program scales just as well as just reading the input would.
+@
+
+\chapter{Playground}
+You fix the teleporter and exit the room,
+finding yourself in yet another new area.
+At least you're taking care of some of the property damage you've caused.
+There is a playground here that Elves are decorating.
+They are connecting electrical junction boxes with strings of lights.
+Your input is a list of three-dimensional box locations,
+in format \texttt{X,Y,Z}.
+Three nonnegative integers, separated by commas.
+The Elves want to make connections in order of increasing distance.
+@
+So naturally, that means that the first step
+is to read in the locations of the boxes.
+Then, we want distinct pairs of boxes, sorted by (squared) distance.
+<<parse day eight as \textup{\texttt{boxes}} of length \textup{\texttt{n}}>>=
+boxes = [
+	tuple([int(x) for x in line.split(',')])
+	for line in file
+]
+n = len(boxes)
+@
+<<make sorted \textup{\texttt{pairs}} for day eight>>=
+pairs = sorted(
+	[(i,j) for i in range(n) for j in range(i + 1, n)],
+	key=lambda p: sqdist(boxes[p[0]], boxes[p[1]])
+)
+@
+The size of a circuit is the number of junction boxes it contains.
+Every box initially is in its own separate little circuit
+containing just that one box.
+But as connections are made, these circuits are merged.
+This is a perfect job for a \emph{disjoint set} data structure,
+also called ``union--find'', after its two primary operations.
+The \texttt{find} operation takes an element
+and gives the unique identifier of the subset that contains it,
+while the \texttt{union} operation takes two elements
+and merges the sets that contain those elements.
+If two elements are in the same subset,
+\texttt{find} returns the same identifier for them;
+otherwise the results are distinct.
+@
+<<day eight definitions>>=
+def find(x, homes, sizes):
+	p = x
+	while p != homes[p]:
+		p = homes[p]
+	while x != p:
+		x, homes[x] = homes[x], p
+	return x, sizes[x]
+<<day eight definitions>>=
+def union(x, y, homes, sizes):
+	px, sx = find(x, homes, sizes)
+	py, sy = find(y, homes, sizes)
+	if px == py: return
+	homes[px] = homes[py] = py if px < py else px
+	sizes[px] = sizes[py] = sx + sy
+	return sx + sy
+@
+We still need to define the (squared) distance.
+That is the sum of the squared differences of the components.
+<<day eight definitions>>=
+def sqdist(p, q):
+	return sum(map(lambda a,b: (a - b)**2, p, q))
+@
+Part one asks for the product of the top three circuit sizes
+after 1000 connections.
+Part two asks for the product of the \(x\)-coordinates
+of the first two boxes that get connected
+to produce a single circuit containing all boxes.
+To handle part one efficiently,
+we'll add a ``top \(n\)'' function instead of using a sort-and-take method.
+<<day eight definitions>>=
+def top(n, xs):
+	out = [None]*n
+	for x in xs:
+		for i,y in enumerate(out):
+			if y is not None and y > x: break
+			if i != 0: out[i - 1] = out[i]
+			out[i] = x
+	return out
+@
+That is all that is needed to make a fairly efficient solution to day eight.
+Parsing the input into a list of positions is clearly linear time.
+The hard part, and what dominates computation,
+is the \(\Theta(n^2 \lg n)\) sorting of the pairs
+in order to make connections in order of increasing (squared) distance.
+Essentially, this problem can be restated as
+using Kruskal's algorithm to compute a minimum spanning tree
+of the complete graph whose vertices are the junction boxes.
+This means that \(\Theta(n^2\lg n)\) is optimal.
+@ \clearpage
+<<08.py>>=
+<<day eight definitions>>
+if __name__ == '__main__':
+	with open('08.txt') as file:
+		<<parse day eight as \textup{\texttt{boxes}} of length \textup{\texttt{n}}>>
+	<<make sorted \textup{\texttt{pairs}} for day eight>>
+	state = list(range(n)), [1]*n
+	todo = 1000
+	a = b = None
+	for done,ij in enumerate(pairs):
+		size = union(*ij, *state)
+		if b is None and size == n:
+			b = boxes[ij[0]][0] * boxes[ij[1]][0]
+		if done == todo - 1:
+			vs = [
+				state[1][i] for i in range(n)
+				if state[0][i] == i
+			]
+			vs.sort(reverse=True)
+			a = 1
+			for x in top(3, vs): a *= x
+		if a is not None and b is not None: break
+	print(a, b, sep='\t')
+@
+
+\chapter{Movie Theater}
+After you help with the lighting, you progress into a movie theater.
+It has some red tiles on the ground, at positions given by your input.
+These positions are presented one per line,
+as two comma-separated integers.
+Your goal is to find the largest rectangle
+that has two red tiles as opposite corners.
+That's a lot like the previous problem,
+except that instead of looking for distances,
+you want rectangular area.
+The setup is pretty similar, though:
+parse the coordinates,
+compute areas given by distinct pairs of tiles,
+then find the maximum of those areas.
+That is what part one requires.
+@
+For part two: we are told that there are green lines
+between consecutive red tiles.
+The last also connects back to the first.
+Consecutive tiles always share a row or column,
+including across the wrap back to the beginning.
+The entire inside of the outlined region is also green.
+Only tiles that are red or green may be replaced.
+Now we want the area of the largest replaceable rectangle
+with two red tiles as opposite corners.
+These are rectangles that would be valid for part one,
+with the further restriction that no lines enter or exit the shape,
+and also that a ray drawn from any interior point
+crosses an odd number of vertical lines on its way out left.
+Given the shape of the input,
+the second restriction need not actually be checked,
+so it is omitted here.
+@
+<<day nine definitions>>=
+def rectarea(p, q):
+	return (abs(q[0] - p[0]) + 1)*(abs(q[1] - p[1]) + 1)
+@
+As stated above,
+a rectangle with corner points \(p\) and \(q\)
+is considered to be valid
+when no line crosses it.
+Let \(x_1\leq x_2\) be the (sorted) \(x\)-coordinates of \(p\) and \(q\),
+and similarly let \(y_1 \leq y_2\) be their (sorted) \(y\)-coordinates.
+Let \(V\) be a vertical line at column \(x_v\)
+with minimum \(y\)-coordinate \(y_a\) and maximum \(y_b\).
+This line \(V\) overlaps with the rectangle
+if its column is in-range (\(x_1 < x_v < x_2\))
+and
+it begins before the rectangle ends and ends after the rectangle starts
+(\(y_a < y_2\) and \(y_1 < y_b\)).
+A horizontal line invalidates the rectangle under similar conditions,
+with \(x\) and \(y\) interchanged as relevant.
+@
+In order to avoid as many tests as possible,
+the collections of horizontal and vertical lines should come in sorted order.
+Then once the column index is too large for vertical lines,
+or once the row index is too large for horizontal lines,
+the search can terminate without checking any remaining lines.
+@
+<<day nine definitions>>=
+def isvalid(p, q, horz, vert):
+	x1, x2 = sorted((p[0], q[0]))
+	y1, y2 = sorted((p[1], q[1]))
+	for x, ya, yb in vert:
+		if x >= x2: break
+		if x1 < x and y1 < yb and ya < y2:
+			return False
+	for y, xa, xb in horz:
+		if y >= y2: break
+		if y1 < y and x1 < xb and xa < x2:
+			return False
+	return True
+@
+Lines are computed as triples containing
+the column, minimal \(y\)-coordinate, and maximal \(y\)-coordinate
+when vertical, or
+the row, minimal \(x\)-coordinate, and maximal \(x\)-coordinate
+when horizontal.
+Connecting the last point back around to the first
+is done by taking advantage of the fact that,
+in Python,
+a negative index wraps around to the other side of the list.
+@
+<<day nine definitions>>=
+def lines(ps):
+	horz = []
+	vert = []
+	for i in range(len(ps)):
+		if ps[i-1][0] == ps[i][0]:
+			ys = sorted((ps[i-1][1], ps[i][1]))
+			vert.append((ps[i][0], *ys))
+		else:
+			xs = sorted((ps[i-1][0], ps[i][0]))
+			horz.append((ps[i][1], *xs))
+	horz.sort()
+	vert.sort()
+	return horz, vert
+@
+<<initialize day nine>>=
+with open('09.txt') as file:
+	red = [
+		tuple(int(p) for p in line.split(','))
+		for line in file
+	]
+n = len(red)
+pairs = [
+	(red[i],red[j])
+	for i in range(n) for j in range(i + 1, n)
+]
+hvs = lines(red)
+@
+You are given \(n\) input points.
+For each pair of points, there is one rectangle.
+For each rectangle,
+its validity is tested by iterating through all possible lines.
+There are as many lines as points,
+so this is a \(\Theta(n^3)\) process.
+@
+<<09.py>>=
+<<day nine definitions>>
+if __name__ == '__main__':
+	<<initialize day nine>>
+	a = b = 0
+	for p in pairs:
+		r = rectarea(*p)
+		if r > a:
+			a = r
+		if r > b and isvalid(*p, *hvs):
+			b = r
+	print(a, b, sep='\t')
+@
+
+\chapter{Factory}
+You leave the movie theater and enter a factory across the hall.
+That doesn't feel like the best place to run heavy machinery,
+but it doesn't really matter because the machines are down anyway.
+The Elves can't figure out how to turn them back on.
+Your input is a series of machine descriptions, one per line,
+consisting of the following features, in order.
+@ \begin{itemize}
+\item In square brackets, a target sequence of indicator lights,
+  like \texttt{[\#..\#]}
+\item A sequence of buttons, each a parenthesized list
+  of which lights it toggles,
+  like \texttt{(0,2) (1) (0,1,2) (2,3)}
+\item In curly braces, a sequence of ``joltage requirements'',
+  the exact number of times each light must be toggled,
+  like \texttt{\{4,5,6,2\}}
+\end{itemize}
+@ The input described above would look like this.
+\begin{quote}\ttfamily\small\noindent
+{[\#..\#]}~(0,2)~(1)~(0,1,2)~(2,3)~\{4,5,6,2\}
+\end{quote}
+@
+To parse a line,
+split on spaces and determine what to do
+based on the first character of each chunk.
+If it is `[', initialize the target state (and size).
+If it is `(', add the button to the buttons set.
+Finally, if it is `\{', set the joltage requirements.
+Knowing the order, we can remove the conditionals.
+@
+<<day ten definitions>>=
+def parse(line):
+	buttons = target = joltage = None
+	p, *parts = line.strip().split()
+	n = len(p) - 2
+	target = sum(2**i
+		for i, x in enumerate(p[1:-1]) if x == '#'
+	)
+	buttons = {0: [(0, (0,)*n)]}
+	joltage = [int(x) for x in parts[-1][1:-1].split(',')]
+	for p in parts[:-1]:
+		b = [int(x) for x in p[1:-1].split(',')]
+		b = tuple(1 if i in b else 0 for i in range(n))
+		extend(buttons, b)
+	return target, buttons, tuple(joltage)
+<<day ten definitions>>=
+def extend(buttons, button):
+	b = sum([2**i * x for i, x in enumerate(button)])
+	ks = list(buttons)[:]
+	for k in ks:
+		if k^b not in buttons:
+			buttons[k^b] = []
+		for cost, contribution in buttons[k]:
+			t = map(lambda x,y: x + y, button, contribution)
+			buttons[k^b].append((1 + cost, tuple(t)))
+@
+For part one, your indicator lights begin in the off state
+and your goal is to turn on the machine by reaching
+the target sequence of lights.
+Then, you flip a switch to begin configuring the joltage for part two;
+the presses from part one to turn on the machine do not contribute here.
+@
+Part one is essentially the ``Lights Out'' puzzle.
+There is never any reason to press a button more than once here,
+as the second press cancels out the first.
+You would have been better off pressing neither.
+The simplest possible approach, then,
+is to look at every subset of the buttons,
+to see what state they produce.
+This is handled in the \texttt{extend} function.
+Of the ways to reach the target state,
+take the minimal number of presses.
+The button set from the sample input above yields the following,
+including the costs and contributions for part two.
+@
+\begin{center}\begin{tabular}{c@{~}c@{~}c@{~}cccc}\toprule
+\texttt{\textbf{(0,2)}}%
+&\texttt{\textbf{(1)}}%
+&\texttt{\textbf{(0,1,2)}}%
+&\texttt{\textbf{(2,3)}}%
+&\textbf{State}%
+&\textbf{Presses}%
+&\textbf{Contribution}\\\midrule
+0&0&0&0&\texttt{[....]}&0&\{0,0,0,0\}\\
+0&0&0&1&\texttt{[..\#\#]}&1&\{0,0,1,1\}\\
+0&0&1&0&\texttt{[\#\#\#.]}&1&\{1,1,1,0\}\\
+0&0&1&1&\texttt{[\#\#.\#]}&2&\{1,1,2,1\}\\
+0&1&0&0&\texttt{[.\#..]}&1&\{0,1,0,0\}\\
+0&1&0&1&\texttt{[.\#\#\#]}&2&\{0,1,1,1\}\\
+0&1&1&0&\texttt{[\#.\#.]}&2&\{1,2,1,0\}\\
+0&1&1&1&\texttt{[\#..\#]}&3&\{1,2,2,1\}\\
+1&0&0&0&\texttt{[\#.\#.]}&1&\{1,0,1,0\}\\
+1&0&0&1&\texttt{[\#..\#]}&2&\{1,0,2,1\}\\
+1&0&1&0&\texttt{[.\#..]}&2&\{2,1,2,0\}\\
+1&0&1&1&\texttt{[.\#\#\#]}&3&\{2,1,3,1\}\\
+1&1&0&0&\texttt{[\#\#\#.]}&2&\{1,1,1,0\}\\
+1&1&0&1&\texttt{[\#\#.\#]}&3&\{1,1,2,1\}\\
+1&1&1&0&\texttt{[....]}&3&\{2,2,2,0\}\\
+1&1&1&1&\texttt{[..\#\#]}&4&\{2,2,3,1\}\\
+\bottomrule
+\end{tabular}\end{center}
+@
+A solution for part two builds on that of part one.
+You can solve part two by building a system of linear equations
+and minimizing over the free variables,
+but that feels a little too ``brute-force'' for my taste.
+Instead, look at it as repeated applications of part one.
+If we begin at zero presses,
+then the way to reach our target
+must press buttons that leave even target values even (off)
+but turn odd target values odd (on).
+The least-significant bits of our target values
+gives a problem to be solved as per part one!
+Account for those presses and you're left with an all-even target state.
+Cut it in half;
+if a sequence \(S\) encodes the best way to reach that halfway point,
+then doing \(S\) twice is the best way to get to the target.
+Try \emph{every} route, though,
+as different ways of reaching the all-even state
+might produce easier all-even states!
+(That is, unlike in part one,
+we cannot be greedy and always choose the minimum press-count.)
+The same state will likely be reached repeatedly,
+so memoization will come in handy.
+@
+<<day ten definitions>>=
+def reach(j, states, cache):
+	if j in cache: return cache[j]
+	elif all(x == 0 for x in j): return 0
+	elif any(x < 0 for x in j): return None
+	target = sum(2**i
+		for i,x in enumerate(j) if x%2 != 0
+	)
+	if target not in states: return None
+	low = None
+	for cost, contribution in states[target]:
+		j2 = map(lambda x,y: (x - y)//2, j, contribution)
+		value = reach(tuple(j2), states, cache)
+		if value is not None:
+			value = cost + 2*value
+			if low is None or low > value: low = value
+	cache[j] = low
+	return low
+@
+The initial state has zero presses for both parts.
+As each machine is read in,
+the minimum overall count to reach the target state
+is added to the part one count,
+and the minimum count to reach the target joltage
+is added to the part two count.
+@
+<<day ten definitions>>=
+def update(machine, a, b):
+	target, states, joltage = machine
+	a += min(states[target])[0]
+	b += reach(joltage, states, dict())
+	return a, b
+@ This slots nicely into the default input-streaming template.
+<<10.py>>=
+<<day ten definitions>>
+if __name__ == '__main__':
+	state = 0, 0
+	with open('10.txt') as file:
+		for line in file:
+			state = update(parse(line), *state)
+	print(*state, sep='\t')
+@
+For the single-machine sample above,
+the target joltage is \(\{4,5,6,2\}\),
+encoding an initial target state of \texttt{[.\#..]}.
+There are two ways to reach this state:
+press just button \texttt{(1)}
+for a cost of 1 and a contribution of \texttt{\{0,1,0,0\}},
+or press buttons \texttt{(0,2)} and \texttt{(0,1,2)}
+for a cost of 2 and a contribution of \texttt{\{2,1,2,0\}}.
+@
+The second possibility
+reduces the remaining joltage from its original \texttt{\{4,5,6,2\}}
+to \texttt{\{2,4,4,0\}}, which halves to \texttt{\{1,2,2,0\}},
+a new target of \texttt{[\#...]}.
+This state is unreachable, so this is a bad choice of initial press.
+So, after instead doing the first,
+the remaining joltage is \texttt{\{4,4,6,2\}},
+which halves to \texttt{\{2,2,3,1\}},
+a new target of \texttt{[..\#\#]}.
+Again there are two ways to reach this:
+press just button \texttt{(2,3)}
+with cost 1 and contribution \texttt{\{0,0,1,1\}},
+or press all the buttons
+with cost 4 and contribution \texttt{\{2,2,3,1\}}.
+The latter precisely reaches the smaller target,
+giving a total cost of \(2\cdot 4 + 1=9\) presses.
+The former, however, reduces it to \texttt{\{2,2,2,0\}},
+which halves to \texttt{\{1,1,1,0\}}.
+You can get that with a single press of \texttt{(0,1,2)},
+so the total cost is \(2\cdot(2\cdot 1 + 1) + 1=7\) presses.
+@
+
+\chapter{Reactor}
+After setting the machines back in order,
+you descend to a reactor that powers them.
+The reactor is having trouble communicating with a server rack.
+You are given a diagram of directional connections,
+each line of the form ``\texttt{source: sink1 sink2 \dots}''.
+For part one, you are asked to find the number of paths
+from ``\texttt{you}'' (the device nearest you)
+to ``\texttt{out}'' (the main output to the reactor).
+For part two, you are asked to find the number of paths
+from ``\texttt{svr}'' (the server) to ``\texttt{out}''
+which pass through both ``\texttt{dac}'' and ``\texttt{fft}''.
+This one turns out to be a much, much larger number.
+To begin, we'll need a representation of the graph.
+@
+For each input line, grab the source and draw an edge from it to each sink.
+That represents the input graph,
+which turns out to have a nice property:
+it is a directed acyclic graph,
+so traversal can never get stuck in a cycle.
+To avoid string comparisons,
+I'll assign each node a unique integer ID,
+and return the five relevant integers
+(``you'', ``out'', ``svr'', ``dac'', and ``fft'')
+alongside the actual connections.
+@
+Because both parts want to traverse from ``out'' to some other node,
+it makes sense to begin there and reverse the edges.
+With that in mind,
+connections are stored as a list of sources per destination,
+the opposite of what the input provides.
+The graph will be sorted topologically,
+from bottom to top,
+to guarantee that all relevant paths are accounted for
+before a node is visited.
+This ensures that values are finalized by the time they are used,
+and that no node needs to be visited more than once.
+<<day eleven definitions>>=
+def parse(file):
+	ids = dict()
+	graph = dict()
+	for line in file:
+		line = line.strip().replace(':',' ').split()
+		for name in line:
+			if name not in ids: ids[name] = len(ids)
+			i = ids[name]
+			if i not in graph: graph[i] = []
+		i = ids[line[0]]
+		for name in line[1:]: graph[ids[name]].append(i)
+	poi = ['you','out','svr','dac','fft']
+	return *[ids[p] for p in poi], graph
+@
+<<day eleven definitions>>=
+def toposort(back):
+	forward = [[] for _ in back]
+	for v, ns in back.items():
+		for n in ns: forward[n].append(v)
+	out = []
+	leaves = [v for v, ns in enumerate(forward) if not ns]
+	while leaves:
+		leaf = leaves.pop()
+		out.append(leaf)
+		for n in back[leaf]:
+			gn = forward[n]
+			gn.remove(leaf)
+			if not gn: leaves.append(n)
+	return out
+@ \clearpage
+The topological sort gives the order in which nodes should be visited.
+From there, I want four counts per node:
+the number of paths from ``\texttt{out}'' to that node containing
+``\texttt{dac}'' (\texttt{pathsD}),
+``\texttt{fft}'' (\texttt{pathsF}),
+both (\texttt{pathsB}), or neither (\texttt{pathsN}).
+Initially, there is one path from ``\texttt{out}'' to itself
+that visits neither.
+Each node visited contributes its paths to its sources.
+The set of points of interest encountered
+grows if the source is itself a point of interest!
+@
+<<11.py>>=
+<<day eleven definitions>>
+if __name__ == '__main__':
+	with open('11.txt') as file:
+		you, out, svr, dac, fft, graph = parse(file)
+	nodes = toposort(graph)
+	pathsN = [0]*len(nodes)
+	pathsD = [0]*len(nodes)
+	pathsF = [0]*len(nodes)
+	pathsB = [0]*len(nodes)
+	pathsN[out] = 1
+	oind = nodes.index(out)
+	for dest in nodes[oind:]:
+		for source in graph[dest]:
+			if source == dac:
+				pathsD[source] += pathsN[dest]
+				pathsB[source] += pathsF[dest]
+			elif source == fft:
+				pathsF[source] += pathsN[dest]
+				pathsB[source] += pathsD[dest]
+			else:
+				pathsN[source] += pathsN[dest]
+				pathsD[source] += pathsD[dest]
+				pathsF[source] += pathsF[dest]
+			pathsB[source] += pathsB[dest]
+	a = pathsN[you] + pathsD[you] + pathsF[you] + pathsB[you]
+	b = pathsB[svr]
+	print(a, b, sep='\t')
+@
+
+\chapter{Christmas Tree Farm}
+The final day arrives, and you finish off by determining
+what sets of presents will fit under the trees
+that fill a cave.
+You are first given a sequence of present shapes,
+described by a line containing an increasing index followed by a colon,
+and then a three-by-three grid
+of \texttt{\#} occupied or \texttt{.} (unoccupied) space
+spanning the three following lines,
+then a blank line.
+Next, you are given a list of trees, one per line,
+of the form ``\texttt{WxH: n0 n1 ...}''\@,
+where \texttt{W} and \texttt{H} are a numeric width and height,
+and the remaining fields indicate
+how many of each kind of present must fit.
+Presents cannot stack nor occupy the same points in space.
+Your task: count the number of regions that fit their required presents.
+@
+This is a difficult problem in general!
+The presents can be rotated or flipped as needed,
+so if you are trying to place \(n\) of them in a \(w\times h\) space,
+then a na\"ive calculation says you have something on the order of
+\(((w-2)\cdot(h-2)\cdot 8)^n\) placements to try.
+Some of those will be the same shape,
+so it's not entirely so bad in practice,
+but it's far from great!
+@
+Thankfully, we do not have the general case here.
+Some simple heuristics can guarantee one decision or the other.
+If there is insufficient total area, the region is definitely out.
+If there is enough room to lay the presents out
+where each gets its own \(3\times 3\) subregion to itself,
+the region is definitely in.
+And after implementing those two checks,
+it turns out that there are no regions left unknown.
+@
+<<12.py>>=
+if __name__ == '__main__':
+	pieces = []
+	area = good = 0
+	with open('12.txt') as file:
+		for line in file:
+			line = line.strip()
+			if not line:
+				pieces.append(area)
+				area = 0
+			elif 'x' in line:
+				size, vs = line.split(':')
+				w, h = [int(x) for x in size.split('x')]
+				vs = [int(x) for x in vs.split()]
+				if sum(vs) <= (w//3)*(h//3):
+					good += 1
+					continue
+				need = map(lambda x,y: x*y, pieces, vs)
+				if sum(need) > w*h:
+					continue
+				print('warning: unknown region')
+			else:
+				area += line.count('#')
+	print(good)
+@ The warning is never emitted, no sophisticated solution is needed!
+@ \backmatter
+% \chapter{Code Chunks}
+% \nowebchunks
+% \chapter{Identifiers}
+% \nowebindex
+@ \end{document}

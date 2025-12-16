@@ -8,12 +8,12 @@ def isvalid(p,q,horz,vert):
     for x,ya,yb in vert:
         if x >= x2:
             break
-        if x > x1 and y1 < yb and y2 >= ya:
+        if x > x1 and y1 < yb and y2 > ya:
             return False
     for y,xa,xb in horz:
         if y >= y2:
             break
-        if y > y1 and x1 < xb and x2 >= xa:
+        if y > y1 and x1 < xb and x2 > xa:
             return False
     return True
 def main():
